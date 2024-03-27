@@ -1,16 +1,27 @@
 :root {
-  font-family: "IBM Plex Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
+  font-family: "Noto Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: var(--color-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --color-bg : #1F1F1F;
+  --color-bg2 : #292929;
+  --color-bg3 : #323232;
+  --color-darkgray : #4F4F4F;
+  --color-lightgray : #9C9C9C;
+  --color-purple : #9758EA;
+  --color-orange : #FB9F16;
+  --color-green : #5EE58A;
+  --color-red : #E63C47;
+  --color-text : #ffffff;
 }
 
 a {
