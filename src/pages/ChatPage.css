@@ -1,0 +1,19 @@
+.Chat-Container{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--color-bg);
+    display: grid;
+    grid-template-columns: 20% 80%;
+    margin: 0 0;
+    padding: 0 0;
+}
+.Chat-Container-grid{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 7% 93%;
+}
+.Chat-Container p {
+    margin: 0 0;
+}

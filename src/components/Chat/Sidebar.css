@@ -1,0 +1,41 @@
+.Sidebar-Container {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Sidebar-grid {
+    width: 95%;
+    height: 98%;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 5px;
+    box-sizing: border-box;
+}
+.ChatList{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 3px;
+    box-sizing: border-box;
+}
+
+.ChatButton-container {
+    margin: 0.2rem 0;
+    width: 90%;
+    background-color: var(--color-bg3);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    transition: .2s;
+}
+
+.ChatButton-container:hover{
+    background-color: var(--color-darkgray);
+    transition: .2s;
+    scale: 1.02;
+    cursor: pointer;
+}
