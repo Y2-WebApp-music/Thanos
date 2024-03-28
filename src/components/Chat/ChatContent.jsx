@@ -26,21 +26,22 @@ function ChatContent() {
         autoExpand();
     };
 
-    useEffect(()=>{
-        const queryMessage = query(messagesRef, orderBy("TimeAt", "asc"))
-        onSnapshot(queryMessage, (snapshot)=>{
+    useEffect(() => {
+        const queryMessage = query(messagesRef, orderBy("TimeAt", "asc"));
+        const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
             let messages = [];
-            snapshot.forEach((doc)=>{
-                messages.push({ ...doc.data(), id:doc.id});
-            })
+            snapshot.forEach((doc) => {
+                messages.push({ ...doc.data(), id: doc.id });
+            });
             setMessages(messages);
             autoExpand();
-        })
-    }, [])
+        });
+
+        return () => unsubscribe();
+    }, [messagesRef]);
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
-        console.log(newMessage)
         if (newMessage === "")return;
 
         await addDoc(messagesRef, {
@@ -58,9 +59,9 @@ function ChatContent() {
                     <div className="chat-container">
                         {messages.map((messages)=>(
                             messages.user === "model"?(
-                                <ModelChat text={messages.text}/>
+                                <ModelChat key={messages.id} text={messages.text}/>
                             ) : (
-                                <UserChat text={messages.text} user={messages.user} photoURL={auth.currentUser.photoURL}/>
+                                <UserChat key={messages.id} text={messages.text} user={messages.user} photoURL={auth.currentUser.photoURL}/>
                             ))
                         )}
                     </div>

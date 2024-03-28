@@ -10,7 +10,7 @@ import Register from './pages/Register'
 import ChatPage from './pages/ChatPage'
 
 function App() {
-  console.log('App.Jsx Get Auth? ===> ' ,auth)
+  console.log("App.jsx")
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"))
 
 
