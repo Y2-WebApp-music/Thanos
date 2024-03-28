@@ -46,9 +46,23 @@
 textarea::-webkit-scrollbar {
     display: none;
 }
-
+.input-Container button {
+    background: none;
+    border: none;
+    padding: 0.4rem 0.4rem;
+    transition: .2s;
+}
+.input-Container button:hover{
+    background-color: var(--color-darkgray);
+    transition: .2s;
+}
 #faPaperPlane{
     color: var(--color-darkgray);
+    transition: .2s;
+}
+.input-Container button:hover #faPaperPlane{
+    color: var(--color-text);
+    transition: .2s;
 }
 .chat-container-scroll{
     width: 100%;

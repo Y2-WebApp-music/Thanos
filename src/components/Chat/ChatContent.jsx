@@ -1,11 +1,17 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import './ChatContent.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { auth, db } from '/src/DB/firebase-config.js'
+import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 
 
 function ChatContent() {
     const textareaRef = useRef(null);
+    console.log(auth.currentUser.displayName)
+    const [newMessage, setNewMessage] = useState("")
+    const messagesRef = collection(db, "messages")
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         autoExpand();
@@ -20,42 +26,65 @@ function ChatContent() {
     const handleChange = () => {
         autoExpand();
     };
+
+    useEffect(()=>{
+        const queryMessage = query(messagesRef, orderBy("TimeAt", "asc"))
+        onSnapshot(queryMessage, (snapshot)=>{
+            let messages = [];
+            snapshot.forEach((doc)=>{
+                messages.push({ ...doc.data(), id:doc.id});
+            })
+            setMessages(messages);
+            autoExpand();
+        })
+    }, [])
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        console.log(newMessage)
+        if (newMessage === "")return;
+
+        await addDoc(messagesRef, {
+            text: newMessage,
+            TimeAt: serverTimestamp(),
+            user: auth.currentUser.displayName
+        });
+        setNewMessage("")
+        autoExpand();
+    }
     return(
         <>
             <div className="ChatContent-container">
                 <div className="chat-container-scroll">
                     <div className="chat-container">
-                        <UserChat text={"คบกับผู้หญิงคนหนึ่งแต่มีปัญหากันห้เจอลูกแต่ก็ตามระรานผมและคนรอบข้างหมดเลยผมอยากจะฟ้องหย่าเพราะผมกับแม่ก็อยากจะเอาหลานกลับมาเลี้ยงคำถามคือตอนแจ้งเกิดยังไม่ได้จดทะเบียนสมรสมผมจะมีสิทธิ์ในตัวลูกหรือเปล่าสามารถฟ้องหย่ากับฝ่ายหญิงได้มั้ยใช้เหตุว่าฝ่ายหญิงทำตัวเป็นปฏิปักษ์ต่อการเป็นสามีภริยาสร้างความเดือดร้อนอับอายให้แก่คู่สมรสไม่เลี้ยงดูบุตรประมาณนี้ได้หรือเปล่าหลักฐานที่มีคือใบลงบันทึกประจำวันของผมที่แจ้งความไว้ว่าโดนภรรยาพูดจาข่มขู่ว่ารออยู่กับมือปืนหมายเรียกจากตำรวจกรณีที่ฝ่ายหญิงส่งไปข่มขู่เจ้าของบ้านแล้วเจ้าของบ้านแจ้งความดำเนินคดีกับฝ่ายหญิง"}/>
-                        <ModelChat text={"This is from Model"}/>
-                        <UserChat text={"ผมได้ทำการขายรถเก๋งให้กับเต้นท์รถเมื่อปีที่แล้วโดยทำการโอนลอยโดยเต้นท์อ้างว่าเป็นเทคนิคเวลาขายต่อจะได้ไม่เป็นรถมือที่จะขายได้ราคาเต้นท์ก็ชำระค่ารถเรียบร้อยต่อมาเมื่อไม่กี่วันมีใบสั่งมาเรียกเก็บค่าปรับจากผมโดยผมไปเช็คที่ขนส่งชื่อเจ้าของและที่อยู่ยังเป็นชื่อผมแต่ทะเบียนรถถูกเปลี่ยนไปแล้วเมื่อพิเคราะห์ดูแล้วคนที่ซื้อต่อจากเต้นท์ไปหรือเป็นคนในเต้นท์ขายต่อพรรคพวกกันแต่ยังไม่ได้โอนจึงทำให้กังวลว่าหากวันหนึ่งรถคันนี้ไปต้องคดีที่หนักกว่านี้จะมีผลมาถึงผมไหมและอย่างไรยังสงสัยอยู่ว่าเมื่อยังไม่โอนกรรมสิทธิ์แต่ไปดำเนินการเปลี่ยนทะเบียนรถได้อย่างไรเช็คกับขนส่งไปดำเนินการเปลี่ยนทะเบียนหลังจากผมขายไปแล้วได้ปีด้วยความที่สัญญาซื้อขายของผมมันหายไปแล้วเมื่อไปที่เต้นท์เค้าก็ว่าจะหาให้และจะตามเรื่องให้แต่เมื่อทวงถามไปหลายครั้งก็บอกว่าทางคนที่ซื้อไปจะจัดการให้แต่ก็ผลัดไปเรื่อยๆและสุดท้ายก็บอกว่าคู่สัญญาที่ทำการซื้อขายหาไม่เจอหลายปีแล้วเมื่อไปแจ้งลงบันทึกประจำวันทางตำรวจก็ไม่รับให้ไปนำหลักฐานมายืนยันอย่างเดียวอย่างนี้พอจะมีเทคนิคหรือวิธีการอย่างไรดีแค่อยากให้เรื่องมันจบไม่คาราคาซังตัดปัญหาที่อาจจะเกิดในอนาคต"}/>
-                        <ModelChat text={"This is from Model"}/>
-                        <UserChat text={"ผมมีแท็กซี่เขียวเหลืองจะขายแต่ยังติดไฟแนนซ์อยู่และคนที่จะมาซื้อจะขอโอนลอยเพราะถ้าเปลี่ยนสัญญาใหม่กับไฟแนนซ์ก็จะมีค่าใช้จ่ายเพิ่มประมาณบาทได้แก่ประกันภัยชั้นบาทจ่ายล่วงหน้าเดือนบาทค่าเปลี่ยนสัญญาบาทคนที่จะมาซื้อก็มีเงินไม่พอผมจะขอรบกวนถามว่าถ้าโอนลอยมีความเสี่ยงกับผู้ขายและผู้ซื้อหรือไม่ผมก็กลัวถ้าผู้ซื้อไม่ผ่อนรถต่อหรือกรณีเกิดอุบัติเหตุผมคงต้องรับผิดชอบใช่ไหมผมควรทำสัญญาอย่างไรเพื่อป้องกันความเสี่ยงที่จะเกิดปัญหาในอนาคตขอขอบพระคุณอย่างสูง"}/>
-                        <ModelChat text={"This is from Model"}/>
-                        <UserChat text={"คบกับผู้หญิงคนหนึ่งแต่มีปัญหากันห้เจอลูกแต่ก็ตามระรานผมและคนรอบข้างหมดเลยผมอยากจะฟ้องหย่าเพราะผมกับแม่ก็อยากจะเอาหลานกลับมาเลี้ยงคำถามคือตอนแจ้งเกิดยังไม่ได้จดทะเบียนสมรสมผมจะมีสิทธิ์ในตัวลูกหรือเปล่าสามารถฟ้องหย่ากับฝ่ายหญิงได้มั้ยใช้เหตุว่าฝ่ายหญิงทำตัวเป็นปฏิปักษ์ต่อการเป็นสามีภริยาสร้างความเดือดร้อนอับอายให้แก่คู่สมรสไม่เลี้ยงดูบุตรประมาณนี้ได้หรือเปล่าหลักฐานที่มีคือใบลงบันทึกประจำวันของผมที่แจ้งความไว้ว่าโดนภรรยาพูดจาข่มขู่ว่ารออยู่กับมือปืนหมายเรียกจากตำรวจกรณีที่ฝ่ายหญิงส่งไปข่มขู่เจ้าของบ้านแล้วเจ้าของบ้านแจ้งความดำเนินคดีกับฝ่ายหญิง"}/>
-                        <ModelChat text={"This is from Model"}/>
-                        <UserChat text={"คบกับผู้หญิงคนหนึ่งแต่มีปัญหากันห้เจอลูกแต่ก็ตามระรานผมและคนรอบข้างหมดเลยผมอยากจะฟ้องหย่าเพราะผมกับแม่ก็อยากจะเอาหลานกลับมาเลี้ยงคำถามคือตอนแจ้งเกิดยังไม่ได้จดทะเบียนสมรสมผมจะมีสิทธิ์ในตัวลูกหรือเปล่าสามารถฟ้องหย่ากับฝ่ายหญิงได้มั้ยใช้เหตุว่าฝ่ายหญิงทำตัวเป็นปฏิปักษ์ต่อการเป็นสามีภริยาสร้างความเดือดร้อนอับอายให้แก่คู่สมรสไม่เลี้ยงดูบุตรประมาณนี้ได้หรือเปล่าหลักฐานที่มีคือใบลงบันทึกประจำวันของผมที่แจ้งความไว้ว่าโดนภรรยาพูดจาข่มขู่ว่ารออยู่กับมือปืนหมายเรียกจากตำรวจกรณีที่ฝ่ายหญิงส่งไปข่มขู่เจ้าของบ้านแล้วเจ้าของบ้านแจ้งความดำเนินคดีกับฝ่ายหญิง"}/>
-                        <ModelChat text={"This is from Model"}/>
-                        <UserChat text={"คบกับผู้หญิงคนหนึ่งแต่มีปัญหากันห้เจอลูกแต่ก็ตามระรานผมและคนรอบข้างหมดเลยผมอยากจะฟ้องหย่าเพราะผมกับแม่ก็อยากจะเอาหลานกลับมาเลี้ยงคำถามคือตอนแจ้งเกิดยังไม่ได้จดทะเบียนสมรสมผมจะมีสิทธิ์ในตัวลูกหรือเปล่าสามารถฟ้องหย่ากับฝ่ายหญิงได้มั้ยใช้เหตุว่าฝ่ายหญิงทำตัวเป็นปฏิปักษ์ต่อการเป็นสามีภริยาสร้างความเดือดร้อนอับอายให้แก่คู่สมรสไม่เลี้ยงดูบุตรประมาณนี้ได้หรือเปล่าหลักฐานที่มีคือใบลงบันทึกประจำวันของผมที่แจ้งความไว้ว่าโดนภรรยาพูดจาข่มขู่ว่ารออยู่กับมือปืนหมายเรียกจากตำรวจกรณีที่ฝ่ายหญิงส่งไปข่มขู่เจ้าของบ้านแล้วเจ้าของบ้านแจ้งความดำเนินคดีกับฝ่ายหญิง"}/>
+                        {messages.map((messages)=>
+                            <UserChat text={messages.text} user={messages.user}/>
+                        )}
                         <ModelChat text={"This is from Model"}/>
                     </div>
                 </div>
                 <div className="bottom-chat-input">
-                    <div className="input-Container">
-                        <textarea ref={textareaRef} name="promptInput" placeholder="คุยกับ 1MAN&3GUY............." id=""  onChange={handleChange}></textarea>
-                        <FontAwesomeIcon icon={faPaperPlane} size="2xl" id="faPaperPlane"/>
-                    </div>
+                    <form action="" onSubmit={handleSubmit} className="input-Container">
+                        <textarea ref={textareaRef}
+                            name="promptInput"
+                            placeholder="คุยกับ 1MAN&3GUY............." id=""
+                            onChange={(e) => {handleChange(e); setNewMessage(e.target.value);}}
+                            value={newMessage}
+                        ></textarea>
+                        <button type="submit"> <FontAwesomeIcon icon={faPaperPlane} size="xl" id="faPaperPlane"/> </button>
+                    </form>
                 </div>
             </div>
         </>
     )
 }
 
-function UserChat({ text }) {
+function UserChat({ text,user }) {
     return (
         <>
             <div className="UserChat-Container">
                 <div className="UserChat-Container-Profile">
-                    <p>username</p>
+                    <p>{user}</p>
                     <img src="public/images/What-meme-12129.jpg" alt="" />
                 </div>
                 <p className="UserChat-text">{text}</p>
