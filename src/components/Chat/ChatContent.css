@@ -16,6 +16,9 @@
 .input-Container{
     background-color: var(--color-bg3);
     width: 50%;
+    border: solid;
+    border-width: 1px;
+    border-color: var(--color-darkgray);
     border-radius: 30px;
     display: grid;
     grid-template-columns: 1fr auto;
@@ -30,15 +33,13 @@
     align-self: center;
     font-family: "Noto Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
     width: 100%;
-    background:none ;
+    background:none;
     resize: none;
-    height: 1.5em;
-    padding: 0 0;
-    height: 1.5em;
-    overflow: scroll;
     border: none;
+    padding: 0 0;
+    overflow: scroll;
     outline: none;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 textarea::-webkit-scrollbar {
