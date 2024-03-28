@@ -1,5 +1,6 @@
 import React from "react";
 import './Login.css'
+import { Auth } from "../DB/Auth";
 
 function Login() {
     return(
@@ -18,7 +19,7 @@ function Login() {
                     </form>
                     <span>ยังไม่มีบัญชีใช่หรือไม่? <a href="/Register">สร้างบัญชี</a> </span>
                     <hr />
-                    <button className="GoogleLogin"> <img src="public/icons/icon-google.svg" alt="" /> Login with Google </button>
+                    <Auth/>
                 </div>
             </div>
         </>

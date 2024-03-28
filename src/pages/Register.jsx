@@ -1,5 +1,6 @@
 import React from "react";
 import './Login.css'
+import { Auth } from "../DB/Auth";
 
 function Register() {
     return(
@@ -19,7 +20,7 @@ function Register() {
                         <input type="submit" value="ยืนยัน" id="LoginSubmit"/>
                     </form>
                     <hr />
-                    <button className="GoogleLogin"> <img src="public/icons/icon-google.svg" alt="" /> Register with Google </button>
+                    <Auth/>
                 </div>
             </div>
         </>
