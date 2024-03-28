@@ -10,12 +10,12 @@ function Sidebar() {
                 <div className="Sidebar-grid">
                     <h3>1man&3guy</h3>
                     <div>
-                        <button><FontAwesomeIcon icon={faCirclePlus} size="lg"/>สร้างแชทใหม่</button>
+                        <button className="CreateChatBTN" onClick={""}><FontAwesomeIcon icon={faCirclePlus} size="xl"/>สร้างแชทใหม่</button>
                     </div>
                     <div className="ChatList-scroll">
                         <div className="ChatList">
-                            <ChatButton chatname={"Start"}/>
-                            <ChatButton chatname={"Hello Testo 1234"}/>
+                            <ChatButton chatname={"Start"} link={"testo"}/>
+                            <ChatButton chatname={"Hello Testo 1234"} link={"testo1"}/>
                             <ChatButton chatname={"Hello Testo 1234"}/>
                             <ChatButton chatname={"Hello Testo 1234"}/>
                             <ChatButton chatname={"Hello Testo 1234"}/>
@@ -52,11 +52,11 @@ function Sidebar() {
     )
 }
 
-function ChatButton({chatname}){
+function ChatButton({chatname, link}){
     return(
         <>
             <div className="ChatButton-container">
-                <p>{chatname}</p>
+                <a href={link}>{chatname}</a>
                 <div className="Chat-Setting"><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
             </div>
         </>

@@ -14,6 +14,26 @@
     gap: 5px;
     box-sizing: border-box;
 }
+.CreateChatBTN{
+    background-color: var(--color-bg3);
+    border-radius: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    transition: .2s;
+    font-size: 1.2rem;
+    color: var(--color-lightgray);
+}
+.CreateChatBTN:hover {
+    background-color: var(--color-darkgray);
+    color: var(--color-text);
+    transition: .2s;
+    scale: 1.03;
+    border-color: var(--color-purple);
+}
+
 .ChatList-scroll {
     width: 100%;
     max-height: 85vh;
@@ -47,11 +67,16 @@
     display: grid;
     grid-template-columns: 1fr auto;
 }
-
+.ChatButton-container a{
+    color: var(--color-text);
+}
 .ChatButton-container:hover{
     background-color: var(--color-darkgray);
     transition: .2s;
     scale: 1.02;
+}
+.ChatButton-container:hover a{
+    color: var(--color-text);
 }
 #faEllipsis{
     color: var(--color-lightgray);
