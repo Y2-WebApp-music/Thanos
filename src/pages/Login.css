@@ -1,0 +1,119 @@
+.Login-container{
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    justify-items: center;
+}
+.Login-text{
+    width: 80%;
+}
+.Login-text p{
+    margin: 0 0;
+    font-size: 1.8rem;
+}
+.Login-text h1{
+    margin: 0 0;
+    font-size: 6rem;
+    color: var(--color-purple);
+    font-weight: 500;
+}
+
+.login-form-bg {
+    background-color: var(--color-bg2);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.login-form-bg p{
+    font-size: 2rem;
+    margin: 0 0;
+}
+
+.login-form-bg span {
+    margin: 0.3rem 0;
+    font-size: 1.1rem;
+}
+.login-form-bg a {
+    color: var(--color-blue);
+    transition: .2s;
+}
+.login-form-bg a:hover{
+    color: var(--color-orange);
+    transition: .2s;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+
+.login-form input {
+    background-color: var(--color-bg2);
+    outline: none;
+    border: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: var(--color-lightgray);
+    font-size: 1.3rem;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+}
+.login-form input:hover{
+    border-color: var(--color-blue);
+    scale: 1.01;
+    background-color: var(--color-bg);
+}
+#LoginSubmit {
+    font-family: "Noto Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
+    background-color: var(--color-orange);
+    align-self: center;
+    width: 40%;
+    border: none;
+    transition: .2;
+}
+#LoginSubmit:hover {
+    scale: 1.03;
+    transition: .2;
+    cursor: pointer;
+}
+
+.login-form-bg hr {
+    width: 50%;
+    border: none;
+    border-top: solid;
+    border-width: 1px;
+    border-color: var(--color-lightgray);
+    border-bottom: none;
+}
+.GoogleLogin  {
+    margin-top: 1rem;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-bg2);
+    border-radius: 10px;
+    border: solid;
+    border-width: 1px;
+    border-color: var(--color-lightgray);
+    padding: 0.3rem 1rem;
+    font-size: 1.2rem;
+    transition: .3s;
+    outline: none;
+}
+.GoogleLogin img {
+    width: 17%;
+}
+.GoogleLogin:hover{
+    background-color: var(--color-bg);
+    scale: 1.03;
+    transition: .3s;
+    border-color: var(--color-blue);
+    outline: none;
+}
