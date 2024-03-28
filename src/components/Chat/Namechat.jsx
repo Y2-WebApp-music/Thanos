@@ -1,5 +1,6 @@
 import React from "react";
 import './Namechat.css'
+import { auth, db } from '/src/DB/firebase-config.js'
 
 function Namechat() {
     return(
@@ -8,9 +9,9 @@ function Namechat() {
                     <p>แชทสำหรับค้นหาประมวลกฎหมายแพ่งและพาณิชย์</p>
                     <div className="Namechat-right-container">
                         <div className="userProfile">
-                            <p>kunguy.159@gmail.com</p>
+                            <p>{auth.currentUser.displayName}</p>
                             <div className="img-profile">
-                                <img src="/public/images/What-meme-12129.jpg" alt="" />
+                                <img src={auth.currentUser.photoURL} alt="" />
                             </div>
                                 {/* <p>Test</p> */}
                         </div>

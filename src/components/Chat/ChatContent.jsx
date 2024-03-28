@@ -8,7 +8,6 @@ import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} 
 
 function ChatContent() {
     const textareaRef = useRef(null);
-    console.log(auth.currentUser.displayName)
     const [newMessage, setNewMessage] = useState("")
     const messagesRef = collection(db, "messages")
     const [messages, setMessages] = useState([]);
@@ -57,10 +56,13 @@ function ChatContent() {
             <div className="ChatContent-container">
                 <div className="chat-container-scroll">
                     <div className="chat-container">
-                        {messages.map((messages)=>
-                            <UserChat text={messages.text} user={messages.user}/>
+                        {messages.map((messages)=>(
+                            messages.user === "model"?(
+                                <ModelChat text={messages.text}/>
+                            ) : (
+                                <UserChat text={messages.text} user={messages.user} photoURL={auth.currentUser.photoURL}/>
+                            ))
                         )}
-                        <ModelChat text={"This is from Model"}/>
                     </div>
                 </div>
                 <div className="bottom-chat-input">
@@ -79,13 +81,13 @@ function ChatContent() {
     )
 }
 
-function UserChat({ text,user }) {
+function UserChat({ text,user, photoURL }) {
     return (
         <>
             <div className="UserChat-Container">
                 <div className="UserChat-Container-Profile">
                     <p>{user}</p>
-                    <img src="public/images/What-meme-12129.jpg" alt="" />
+                    <img src={photoURL} alt="" />
                 </div>
                 <p className="UserChat-text">{text}</p>
             </div>
