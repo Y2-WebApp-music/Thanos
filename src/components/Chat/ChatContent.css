@@ -2,4 +2,49 @@
     width: 100%;
     height: 100%;
     background-color: var(--color-bg);
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
+.bottom-chat-input{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.input-Container{
+    background-color: var(--color-bg3);
+    width: 50%;
+    border-radius: 30px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    justify-items: center;
+    align-items: flex-end;
+    box-shadow: 0rem 0rem 0.4rem rgba(0, 0, 0, 0.25);
+}
+.input-Container textarea{
+    align-self: center;
+    font-family: "Noto Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
+    width: 100%;
+    background:none ;
+    resize: none;
+    height: 1.5em;
+    padding: 0 0;
+    height: 1.5em;
+    overflow: scroll;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+}
+
+textarea::-webkit-scrollbar {
+    display: none;
+}
+
+#faPaperPlane{
+    color: var(--color-darkgray);
 }
