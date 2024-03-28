@@ -4,18 +4,30 @@
     background-color: var(--color-bg2);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 .Sidebar-grid {
-    width: 95%;
+    width: 90%;
     height: 98%;
     display: grid;
     grid-template-rows: auto auto 1fr;
     gap: 5px;
     box-sizing: border-box;
 }
-.ChatList{
+.ChatList-scroll {
     width: 100%;
+    max-height: 85vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+}
+.ChatList-scroll::-webkit-scrollbar {
+    display: none;
+}
+.ChatList{
+    margin-top: 1rem;
+    width: 95%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -25,17 +37,35 @@
 }
 
 .ChatButton-container {
-    margin: 0.2rem 0;
+    margin: 0rem 0;
+    margin-bottom: 0.5rem;
     width: 90%;
     background-color: var(--color-bg3);
     padding: 0.5rem 1rem;
     border-radius: 10px;
     transition: .2s;
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
 
 .ChatButton-container:hover{
     background-color: var(--color-darkgray);
     transition: .2s;
     scale: 1.02;
+}
+#faEllipsis{
+    color: var(--color-lightgray);
+    transition: .2s;
+}
+.Chat-Setting:hover #faEllipsis{
+    color: var(--color-text);
+    transition: .2s;
+    scale: 1.1;
+}
+.Chat-Setting{
+    padding: 0 0.2rem;
+    border-radius: 3px;
+}
+.Chat-Setting:hover{
     cursor: pointer;
 }
