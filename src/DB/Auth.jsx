@@ -1,8 +1,28 @@
 import { auth, provider } from '../DB/firebase-config'
-import { signInWithPopup } from 'firebase/auth'
+import { onAuthStateChanged, signInWithPopup } from 'firebase/auth'
+import { createContext, useEffect, useState } from 'react';
 
 import Cookies from 'universal-cookie'
 const cookies = new Cookies();
+
+export const AuthContext = createContext()
+export const AuthContextProvider = ({children})=>{
+    const [currentUser, setCurrentUser] = useState({})
+
+    useEffect(()=>{
+        const unsubscribe = onAuthStateChanged(auth,(user)=>{
+            setCurrentUser(user)
+        })
+
+        return () => unsubscribe();
+    },[])
+
+    return(
+        <AuthContext.Provider value={{currentUser}}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
 
 export const Auth =(props)=> {
     const {setIsAuth} = props

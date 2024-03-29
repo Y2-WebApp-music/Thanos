@@ -1,8 +1,10 @@
 import React from "react";
 import './Login.css'
 import { Auth } from "../DB/Auth";
+// import useNavigate from 'react-router-dom'
 
 function Login({setIsAuth}) {
+    // const Navigate = useNavigate()
     return(
         <>
             <div className="Login-container">
