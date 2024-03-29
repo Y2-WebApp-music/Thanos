@@ -4,7 +4,7 @@ import { Auth } from "../DB/Auth";
 import { auth } from '../DB/firebase-config'
 import { setSourceMapRange } from "typescript";
 import { useNavigate } from 'react-router-dom'
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
     const [err, setErr] = useState(false)
@@ -31,7 +31,7 @@ function Login() {
                 <div className="login-form-bg">
                     <p>ยินดีต้อนรับ</p>
                     <form action="" className="login-form" onSubmit={handleSubmit}>
-                        <input type="text" placeholder="email" name="email"/>
+                        <input type="email" placeholder="email" name="email"/>
                         <input type="password" placeholder="password" name="password"/>
                         <input type="submit" value="Login" id="LoginSubmit"/>
                     </form>

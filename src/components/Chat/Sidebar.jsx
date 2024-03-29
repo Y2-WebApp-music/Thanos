@@ -55,7 +55,7 @@ function ChatButton({chatname, link}){
     return(
         <>
             <div className="ChatButton-container">
-                <a href={link}>{chatname}</a>
+                <a href={""}>{chatname}</a>
                 <div className="Chat-Setting"><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
             </div>
         </>
