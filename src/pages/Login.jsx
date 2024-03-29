@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import './Login.css'
 import { Auth } from "../DB/Auth";
+import { auth } from '../DB/firebase-config'
+import { setSourceMapRange } from "typescript";
+import { useNavigate } from 'react-router-dom'
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
+    const [err, setErr] = useState(false)
+    const navigate = useNavigate();
+
+    const handleSubmit = async(e)=>{
+        e.preventDefault()
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        try{
+            await signInWithEmailAndPassword(auth, email, password)
+            navigate("/chat")
+        }catch(err){setSourceMapRange(true)}
+    }
+
     return(
         <>
             <div className="Login-container">
@@ -12,7 +30,7 @@ function Login() {
                 </div>
                 <div className="login-form-bg">
                     <p>ยินดีต้อนรับ</p>
-                    <form action="post" className="login-form">
+                    <form action="" className="login-form" onSubmit={handleSubmit}>
                         <input type="text" placeholder="email" name="email"/>
                         <input type="password" placeholder="password" name="password"/>
                         <input type="submit" value="Login" id="LoginSubmit"/>

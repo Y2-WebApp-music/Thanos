@@ -15,7 +15,7 @@ function App() {
   // const [isAuth, setIsAuth] = useState(cookies.get("auth-token"))
   const {currentUser} = useContext(AuthContext)
 
-  console.log(currentUser)
+  // console.log(currentUser)
 
   const ProtectedRoute = ({children}) => {
     if(!currentUser){
