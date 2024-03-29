@@ -1,10 +1,8 @@
 import React from "react";
 import './Login.css'
 import { Auth } from "../DB/Auth";
-// import useNavigate from 'react-router-dom'
 
-function Login({setIsAuth}) {
-    // const Navigate = useNavigate()
+function Login() {
     return(
         <>
             <div className="Login-container">
@@ -21,7 +19,7 @@ function Login({setIsAuth}) {
                     </form>
                     <span>ยังไม่มีบัญชีใช่หรือไม่? <a href="/Register">สร้างบัญชี</a> </span>
                     <hr />
-                    <Auth setIsAuth={setIsAuth}/>
+                    <Auth />
                 </div>
             </div>
         </>

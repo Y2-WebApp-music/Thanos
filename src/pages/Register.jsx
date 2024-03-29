@@ -2,7 +2,7 @@ import React from "react";
 import './Login.css'
 import { Auth } from "../DB/Auth";
 
-function Register({setIsAuth}) {
+function Register() {
     return(
         <>
             <div className="Login-container">
@@ -20,7 +20,7 @@ function Register({setIsAuth}) {
                         <input type="submit" value="ยืนยัน" id="LoginSubmit"/>
                     </form>
                     <hr />
-                    <Auth setIsAuth={setIsAuth}/>
+                    <Auth />
                 </div>
             </div>
         </>

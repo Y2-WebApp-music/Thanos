@@ -1,6 +1,7 @@
 import { auth, provider } from '../DB/firebase-config'
 import { onAuthStateChanged, signInWithPopup } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 import Cookies from 'universal-cookie'
 const cookies = new Cookies();
@@ -24,14 +25,13 @@ export const AuthContextProvider = ({children})=>{
     )
 }
 
-export const Auth =(props)=> {
-    const {setIsAuth} = props
+export const Auth =()=> {
+    const navigate = useNavigate();
     const signInWithGoogle = async () =>{
         try{
             const result = await signInWithPopup(auth, provider);
             cookies.set("auth-token", result.user.refreshToken);
-            setIsAuth(true)
-            console.log(result)
+            navigate("/chat");
         } catch(err){
             console.error(err)
         }

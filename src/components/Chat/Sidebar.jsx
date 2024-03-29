@@ -4,8 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsis, faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
+import { useNavigate } from 'react-router-dom'
 
 function Sidebar() {
+    const navigate = useNavigate();
+    const handleHomepage = () => {navigate("/");};
+
     const [chatList, setChatList] = useState([
         { id:1 ,chatname: "Start" },
         { id:2 ,chatname: "Second" },
@@ -28,7 +32,7 @@ function Sidebar() {
         <>
             <div className="Sidebar-Container">
                 <div className="Sidebar-grid">
-                    <h3>1man&3guy</h3>
+                    <h3 onClick={handleHomepage}>1man&3guy</h3>
                     <div>
                         <button className="CreateChatBTN" onClick={handleCreateChat}>
                             <FontAwesomeIcon icon={faCirclePlus} size="xl"/>สร้างแชทใหม่
