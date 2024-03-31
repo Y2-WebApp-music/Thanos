@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import './Sidebar.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsis, faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis, faCirclePlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
@@ -11,10 +11,11 @@ function Sidebar() {
     const handleHomepage = () => {navigate("/");};
 
     const [chatList, setChatList] = useState([
-        { id:1 ,chatname: "Start" },
-        { id:2 ,chatname: "Second" },
-        { id:3 ,chatname: "Hello Testo 1234" }
+        { chatname: "Start" },
+        { chatname: "Second" }
     ])
+
+    console.log(chatList)
 
     const chatRef = collection(db, "chatroom")
 
@@ -52,11 +53,34 @@ function Sidebar() {
 }
 
 function ChatButton({chatname, link}){
+    const [isPopUpOpen, setPopUpOpen] = useState(false);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isPopUpOpen && !event.target.closest('.Chat-Setting')) {
+                setPopUpOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isPopUpOpen]);
+
+    const togglePopUp = () => {
+        setPopUpOpen(!isPopUpOpen);
+    };
     return(
         <>
             <div className="ChatButton-container">
                 <a href={""}>{chatname}</a>
-                <div className="Chat-Setting"><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
+                <div className="Chat-Setting" onClick={togglePopUp}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
+                {isPopUpOpen &&
+                    <div className="Sidebar-popup">
+                        <button><FontAwesomeIcon icon={faPenToSquare} size="sm" /> เปลี่ยนชื่อ</button>
+                        <button><FontAwesomeIcon icon={faTrash} size="sm" /> ลบแชทนี้</button>
+                    </div>
+                }
             </div>
         </>
     )
