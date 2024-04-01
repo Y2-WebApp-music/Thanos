@@ -10,24 +10,41 @@ function Sidebar() {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
 
-    const [chatList, setChatList] = useState([
-        { chatname: "Start" },
-        { chatname: "Second" }
-    ])
+    // const [chatList, setChatList] = useState([])
 
-    console.log(chatList)
+    const [chatList, setChatList] = useState([
+        {chatname:"test1"},
+        {chatname:"test1"},
+        {chatname:"test1"},
+        {chatname:"test1"},
+        {chatname:"test1"},
+        {chatname:"test1"},
+        {chatname:"test2"},
+
+    ])
 
     const chatRef = collection(db, "chatroom")
 
     const handleCreateChat = async () => {
-        const newChatRoom = { chatname: "New Chat" };
-        setChatList(prevChatList => [...prevChatList, newChatRoom]);
+        const newChatRoom = "New Chat";
 
-        // await addDoc(chatRef, {
-        //     chatname:newChatRoom,
-        //     TimeAdd: serverTimestamp()
-        // })
+        await addDoc(chatRef, {
+            chatname:newChatRoom,
+            TimeAdd: serverTimestamp()
+        })
     };
+
+    // useEffect(() => {
+    //     const queryChat = query(chatRef, orderBy("TimeAdd", "asc"));
+    //     const unsubscribe = onSnapshot(queryChat, (snapshot) => {
+    //         let chatLists = [];
+    //         snapshot.forEach((doc) => {
+    //             chatLists.push({ ...doc.data(), id: doc.id });
+    //         });
+    //         setChatList(chatLists);
+    //     });
+    //     return () => unsubscribe();
+    // }, [chatRef]);
 
     return(
         <>
@@ -42,7 +59,7 @@ function Sidebar() {
                     <div className="ChatList-scroll">
                         <div className="ChatList">
                             {chatList.map((chatList) => (
-                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} />
+                                <ChatButton key={chatList.id} chatname={chatList.chatname} />
                             ))}
                         </div>
                     </div>
@@ -73,7 +90,7 @@ function ChatButton({chatname, link}){
     return(
         <>
             <div className="ChatButton-container">
-                <a href={""}>{chatname}</a>
+                <p>{chatname}</p>
                 <div className="Chat-Setting" onClick={togglePopUp}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
                 {isPopUpOpen &&
                     <div className="Sidebar-popup">

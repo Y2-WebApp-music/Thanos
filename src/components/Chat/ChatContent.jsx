@@ -103,6 +103,10 @@ function ChatContent() {
         autoExpand();
     };
 
+    const handleKey = e=>{
+        e.code === "Enter" && handleSubmit()
+    }
+
     const handleSubmit = async (e)=>{
         e.preventDefault();
         if (newMessage === "")return;
@@ -150,7 +154,7 @@ function ChatContent() {
                     </div>
                 </div>
                 <div className="bottom-chat-input">
-                    <form action="" onSubmit={handleSubmit} className="input-Container">
+                    <form action="" onSubmit={handleSubmit} onKeyDown={handleKey} className="input-Container">
                         <textarea ref={textareaRef}
                             name="promptInput"
                             placeholder="คุยกับ 1MAN&3GUY............." id=""
