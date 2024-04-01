@@ -80,6 +80,13 @@
 .ChatButton-container:hover a{
     color: var(--color-text);
 }
+.ChatButton-container.selected {
+    background-color: var(--color-purple);
+}
+.ChatButton-container.selected #faEllipsis{
+    color: var(--color-text);
+}
+
 #faEllipsis{
     color: var(--color-lightgray);
     transition: .2s;

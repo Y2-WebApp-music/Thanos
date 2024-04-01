@@ -43,7 +43,13 @@ function Sidebar({ onChatButtonClick }) {
     //     return () => unsubscribe();
     // }, [chatRef]);
 
+    // const handleChatButtonClick = (chatId) => {
+    //     onChatButtonClick(chatId);
+    // };
+    const [selectedChat, setSelectedChat] = useState(null);
+
     const handleChatButtonClick = (chatId) => {
+        setSelectedChat(chatId);
         onChatButtonClick(chatId);
     };
 
@@ -60,7 +66,7 @@ function Sidebar({ onChatButtonClick }) {
                     <div className="ChatList-scroll">
                         <div className="ChatList">
                             {chatList.map((chatList) => (
-                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} onChatButtonClick={handleChatButtonClick} />
+                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList.id}/>
                             ))}
                         </div>
                     </div>
@@ -70,7 +76,7 @@ function Sidebar({ onChatButtonClick }) {
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link}){
+function ChatButton({chatname, onChatButtonClick, link, isSelected}){
     const [isPopUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
@@ -91,9 +97,13 @@ function ChatButton({chatname, onChatButtonClick, link}){
     const handleClick = () => {
         onChatButtonClick(link);
     };
+
     return(
         <>
-            <div className="ChatButton-container" onClick={handleClick}>
+            <div className={`ChatButton-container ${isSelected ? 'selected' : ''}`} onClick={(e) => {
+                handleClick();
+                e.stopPropagation();
+            }}>
                 <p>{chatname}</p>
                 <div className="Chat-Setting" onClick={togglePopUp}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
                 {isPopUpOpen &&
