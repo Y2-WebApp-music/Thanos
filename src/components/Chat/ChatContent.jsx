@@ -6,7 +6,9 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 
 
-function ChatContent() {
+function ChatContent({ chatId }) {
+
+    console.log('chatId :',chatId)
     const textareaRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [newMessage, setNewMessage] = useState("")
@@ -112,6 +114,7 @@ function ChatContent() {
         if (newMessage === "")return;
 
         await addDoc(messagesRef, {
+            chatId: chatId,
             text: newMessage,
             TimeAt: serverTimestamp(),
             user: auth.currentUser.displayName
@@ -126,7 +129,7 @@ function ChatContent() {
     }, []);
 
     // useEffect(() => {
-    //     const queryMessage = query(messagesRef, orderBy("TimeAt", "asc"));
+    //     const queryMessage = query(messagesRef, where("chatId", "==", chatId), orderBy("TimeAt", "asc"));
     //     const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
     //         let messages = [];
     //         snapshot.forEach((doc) => {
@@ -137,7 +140,7 @@ function ChatContent() {
     //     });
 
     //     return () => unsubscribe();
-    // }, [messagesRef]);
+    // }, [chatId]);
 
     return(
         <>

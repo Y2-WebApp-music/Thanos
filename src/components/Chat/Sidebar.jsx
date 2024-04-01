@@ -6,21 +6,14 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 
-function Sidebar() {
+function Sidebar({ onChatButtonClick }) {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
 
     // const [chatList, setChatList] = useState([])
-
     const [chatList, setChatList] = useState([
-        {chatname:"test1"},
-        {chatname:"test1"},
-        {chatname:"test1"},
-        {chatname:"test1"},
-        {chatname:"test1"},
-        {chatname:"test1"},
-        {chatname:"test2"},
-
+        {id:123 , chatname:"newchat1"},
+        {id:456 , chatname:"newchat2"},
     ])
 
     const chatRef = collection(db, "chatroom")
@@ -28,10 +21,14 @@ function Sidebar() {
     const handleCreateChat = async () => {
         const newChatRoom = "New Chat";
 
-        await addDoc(chatRef, {
-            chatname:newChatRoom,
-            TimeAdd: serverTimestamp()
-        })
+        try {
+            await addDoc(chatRef, {
+                chatname: newChatRoom,
+                TimeAdd: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
     };
 
     // useEffect(() => {
@@ -46,6 +43,10 @@ function Sidebar() {
     //     return () => unsubscribe();
     // }, [chatRef]);
 
+    const handleChatButtonClick = (chatId) => {
+        onChatButtonClick(chatId);
+    };
+
     return(
         <>
             <div className="Sidebar-Container">
@@ -59,7 +60,7 @@ function Sidebar() {
                     <div className="ChatList-scroll">
                         <div className="ChatList">
                             {chatList.map((chatList) => (
-                                <ChatButton key={chatList.id} chatname={chatList.chatname} />
+                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} onChatButtonClick={handleChatButtonClick} />
                             ))}
                         </div>
                     </div>
@@ -69,7 +70,7 @@ function Sidebar() {
     )
 }
 
-function ChatButton({chatname, link}){
+function ChatButton({chatname, onChatButtonClick, link}){
     const [isPopUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
@@ -87,9 +88,12 @@ function ChatButton({chatname, link}){
     const togglePopUp = () => {
         setPopUpOpen(!isPopUpOpen);
     };
+    const handleClick = () => {
+        onChatButtonClick(link);
+    };
     return(
         <>
-            <div className="ChatButton-container">
+            <div className="ChatButton-container" onClick={handleClick}>
                 <p>{chatname}</p>
                 <div className="Chat-Setting" onClick={togglePopUp}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
                 {isPopUpOpen &&
