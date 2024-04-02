@@ -6,10 +6,10 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, doc, updateDoc, deleteDoc, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 
-function Sidebar({ onChatButtonClick }) {
+function Sidebar({ onChatButtonClick ,chatSelect}) {
     const navigate = useNavigate();
-    const [selectedChat, setSelectedChat] = useState(null);
     const handleHomepage = () => {navigate("/");};
+    const [selectedChat, setSelectedChat] = useState(null);
     const chatRef = collection(db, "chatroom")
     const [userId, setUserID] = useState(null)
     useEffect(() => {
@@ -23,38 +23,47 @@ function Sidebar({ onChatButtonClick }) {
         return () => unsubscribe();
     }, []);
 
-    const [chatList, setChatList] = useState([])
-    // const [chatList, setChatList] = useState([
-    //     {id:123 , chatname:"newchat1", UserId:"nq34itboBIRN($PWTI"},
-    //     {id:456 , chatname:"newchat2", UserId:"DJKFBN124LKAW1231"},
-    // ])
+    useEffect(() => {
+        setSelectedChat(chatSelect);
+    }, [chatSelect]);
+
+    // const [chatList, setChatList] = useState([])
+    const [chatList, setChatList] = useState([
+        {id:123 , chatname:"newchat1", userId:"nq34itboBIRN($PWTI"},
+        {id:456 , chatname:"newchat2", userId:"DJKFBN124LKAW1231"},
+    ])
 
     const handleCreateChat = async () => {
         const newChatRoom = "New Chat";
 
         try {
-            await addDoc(chatRef, {
-                chatname: newChatRoom,
-                TimeAdd: serverTimestamp(),
-                userId: userId
-            });
+            let TestNewRoom = {id:178945223 , chatname:"TestNewRoom", userId:"nq34itboBIRN($PWTI"}
+            setChatList(prevChatList => [...prevChatList, TestNewRoom]);
+            // let newRoom = await addDoc(chatRef, {
+            //     chatname: newChatRoom,
+            //     TimeAdd: serverTimestamp(),
+            //     userId: userId
+            // });
+            console.log(TestNewRoom.id)
+            setSelectedChat(TestNewRoom.id);
+            onChatButtonClick(TestNewRoom.id, userId);
         } catch (error) {
             console.error("Error adding document: ", error);
         }
     };
 
-    useEffect(() => {
-        // console.log("useEffect query DB ==> chatroom")
-        const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "asc"));
-        const unsubscribe = onSnapshot(queryChat, (snapshot) => {
-            let chatLists = [];
-            snapshot.forEach((doc) => {
-                chatLists.push({ ...doc.data(), id: doc.id });
-            });
-            setChatList(chatLists);
-        });
-        return () => unsubscribe();
-    }, [chatList]);
+    // useEffect(() => {
+    //     // console.log("useEffect query DB ==> chatroom")
+    //     const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "asc"));
+    //     const unsubscribe = onSnapshot(queryChat, (snapshot) => {
+    //         let chatLists = [];
+    //         snapshot.forEach((doc) => {
+    //             chatLists.push({ ...doc.data(), id: doc.id });
+    //         });
+    //         setChatList(chatLists);
+    //     });
+    //     return () => unsubscribe();
+    // }, [chatList]);
 
     const handleChatButtonClick = (chatId, userId) => {
         setSelectedChat(chatId);

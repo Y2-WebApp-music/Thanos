@@ -6,7 +6,7 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 
 
-function ChatContent({ ChatroomID, UserCurrent }) {
+function ChatContent({ ChatroomID, UserCurrent, ChatSelect}) {
     const [chatId, setChatId] = useState(ChatroomID)
     const [UserId, setUserId] = useState(UserCurrent)
     useEffect(() => {
@@ -109,31 +109,33 @@ function ChatContent({ ChatroomID, UserCurrent }) {
         if (newMessage === "")return;
         if (chatId === null ){
             try {
-                const  newChatRef = await addDoc(chatRef, {
-                    chatname: "newChatRoom",
-                    TimeAdd: serverTimestamp(),
-                    userId: auth.currentUser.uid
-                });
+                let newChatRef = {id:37485698345 , chatname:"FromChatContent", userId:"BLHJRV489giuLGRIU24"}
+                // const  newChatRef = await addDoc(chatRef, {
+                //     chatname: "newChatRoom",
+                //     TimeAdd: serverTimestamp(),
+                //     userId: auth.currentUser.uid
+                // });
                 setChatId(newChatRef.id);
                 setUserId(auth.currentUser.uid);
-                await addDoc(messagesRef, {
-                    chatId: newChatRef.id,
-                    text: newMessage,
-                    TimeAt: serverTimestamp(),
-                    userId: auth.currentUser.uid
-                });
+                // await addDoc(messagesRef, {
+                //     chatId: newChatRef.id,
+                //     text: newMessage,
+                //     TimeAt: serverTimestamp(),
+                //     userId: auth.currentUser.uid
+                // });
+                ChatSelect(newChatRef.id)
                 setNewMessage("")
                 autoExpand();
             } catch (error) {
                 console.error("Error adding document: ", error);
             }
         }else{
-            await addDoc(messagesRef, {
-                chatId: chatId,
-                text: newMessage,
-                TimeAt: serverTimestamp(),
-                userId: auth.currentUser.uid
-            });
+            // await addDoc(messagesRef, {
+            //     chatId: chatId,
+            //     text: newMessage,
+            //     TimeAt: serverTimestamp(),
+            //     userId: auth.currentUser.uid
+            // });
             setNewMessage("")
             autoExpand();
         }
@@ -143,20 +145,19 @@ function ChatContent({ ChatroomID, UserCurrent }) {
         autoExpand();
     }, []);
 
-    useEffect(() => {
-        // console.log("useEffect query DB ==> messages")
-        const queryMessage = query(messagesRef, where("chatId", "==", chatId),where("userId", "==", UserId), orderBy("TimeAt", "asc"));
-        const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
-            let messages = [];
-            snapshot.forEach((doc) => {
-                messages.push({ ...doc.data(), id: doc.id });
-            });
-            setMessages(messages);
-            autoExpand();
-        });
-
-        return () => unsubscribe();
-    }, [messages]);
+    // useEffect(() => {
+    //     // console.log("useEffect query DB ==> messages")
+    //     const queryMessage = query(messagesRef, where("chatId", "==", chatId),where("userId", "==", UserId), orderBy("TimeAt", "asc"));
+    //     const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
+    //         let messages = [];
+    //         snapshot.forEach((doc) => {
+    //             messages.push({ ...doc.data(), id: doc.id });
+    //         });
+    //         setMessages(messages);
+    //         autoExpand();
+    //     });
+    //     return () => unsubscribe();
+    // }, [messages]);
 
     return(
         <>
