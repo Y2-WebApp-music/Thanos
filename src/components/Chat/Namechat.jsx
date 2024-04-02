@@ -13,7 +13,7 @@ function Namechat() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (isPopUpOpen && !event.target.closest('')) {
+            if (isPopUpOpen && !event.target.closest('.popUp-User')) {
                 setPopUpOpen(false);
             }
         };

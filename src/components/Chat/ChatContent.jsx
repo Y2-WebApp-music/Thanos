@@ -6,9 +6,10 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 
 
-function ChatContent({ chatId }) {
+function ChatContent({ chatId, UserId }) {
+    console.log('chatId', chatId)
+    console.log('UserId', UserId)
 
-    console.log('chatId :',chatId)
     const textareaRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [newMessage, setNewMessage] = useState("")
@@ -117,7 +118,7 @@ function ChatContent({ chatId }) {
             chatId: chatId,
             text: newMessage,
             TimeAt: serverTimestamp(),
-            user: auth.currentUser.displayName
+            userId: auth.currentUser.uid
         });
         setNewMessage("")
         autoExpand();
@@ -129,7 +130,7 @@ function ChatContent({ chatId }) {
     }, []);
 
     // useEffect(() => {
-    //     const queryMessage = query(messagesRef, where("chatId", "==", chatId), orderBy("TimeAt", "asc"));
+    //     const queryMessage = query(messagesRef, where("chatId", "==", chatId),where("userId", "==", userId), orderBy("TimeAt", "asc"));
     //     const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
     //         let messages = [];
     //         snapshot.forEach((doc) => {
@@ -140,19 +141,29 @@ function ChatContent({ chatId }) {
     //     });
 
     //     return () => unsubscribe();
-    // }, [chatId]);
+    // }, [currentChat.link]);
 
     return(
         <>
             <div className="ChatContent-container">
                 <div className="chat-container-scroll">
-                    <div className="chat-container" ref={chatContainerRef}>
-                        {messages.map((messages)=>(
-                            messages.user === "model"?(
-                                <ModelChat key={messages.id} text={messages.text}/>
-                            ) : (
-                                <UserChat key={messages.id} text={messages.text} user={messages.user} photoURL={"public/images/ModelPicture.jpg"}/>
-                            ))
+                    <div className="chat-container-Empty" ref={chatContainerRef}>
+                        {chatId === null?(
+                            <>
+                            <div className="NewChat-Container">
+                                <h1>1Man and 3Guy</h1>
+                            </div>
+                            </>
+                        ):(
+                            <div className="chat-container">
+                                {messages.map((message) => (
+                                    message.user === "model" ? (
+                                        <ModelChat key={message.id} text={message.text} />
+                                    ) : (
+                                        <UserChat key={message.id} text={message.text} user={message.user} photoURL={auth.currentUser.photoURL} />
+                                    )
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>

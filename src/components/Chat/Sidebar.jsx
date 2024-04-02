@@ -3,20 +3,20 @@ import './Sidebar.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsis, faCirclePlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { auth, db } from '/src/DB/firebase-config.js'
-import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
+import {addDoc, collection, doc, updateDoc, deleteDoc, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 
 function Sidebar({ onChatButtonClick }) {
     const navigate = useNavigate();
+    const [selectedChat, setSelectedChat] = useState(null);
     const handleHomepage = () => {navigate("/");};
+    const chatRef = collection(db, "chatroom")
 
     // const [chatList, setChatList] = useState([])
     const [chatList, setChatList] = useState([
-        {id:123 , chatname:"newchat1"},
-        {id:456 , chatname:"newchat2"},
+        {id:123 , chatname:"newchat1", UserId:"nq34itboBIRN($PWTI"},
+        {id:456 , chatname:"newchat2", UserId:"DJKFBN124LKAW1231"},
     ])
-
-    const chatRef = collection(db, "chatroom")
 
     const handleCreateChat = async () => {
         const newChatRoom = "New Chat";
@@ -24,7 +24,8 @@ function Sidebar({ onChatButtonClick }) {
         try {
             await addDoc(chatRef, {
                 chatname: newChatRoom,
-                TimeAdd: serverTimestamp()
+                TimeAdd: serverTimestamp(),
+                userId: auth.currentUser.uid
             });
         } catch (error) {
             console.error("Error adding document: ", error);
@@ -32,7 +33,7 @@ function Sidebar({ onChatButtonClick }) {
     };
 
     // useEffect(() => {
-    //     const queryChat = query(chatRef, orderBy("TimeAdd", "asc"));
+    //     const queryChat = query(chatRef, where("userId", "==", auth.currentUser.uid),orderBy("TimeAdd", "asc"));
     //     const unsubscribe = onSnapshot(queryChat, (snapshot) => {
     //         let chatLists = [];
     //         snapshot.forEach((doc) => {
@@ -43,14 +44,9 @@ function Sidebar({ onChatButtonClick }) {
     //     return () => unsubscribe();
     // }, [chatRef]);
 
-    // const handleChatButtonClick = (chatId) => {
-    //     onChatButtonClick(chatId);
-    // };
-    const [selectedChat, setSelectedChat] = useState(null);
-
-    const handleChatButtonClick = (chatId) => {
+    const handleChatButtonClick = (chatId, UserId) => {
         setSelectedChat(chatId);
-        onChatButtonClick(chatId);
+        onChatButtonClick(chatId, UserId);
     };
 
     return(
@@ -66,7 +62,7 @@ function Sidebar({ onChatButtonClick }) {
                     <div className="ChatList-scroll">
                         <div className="ChatList">
                             {chatList.map((chatList) => (
-                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList.id}/>
+                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} UserId={chatList.UserId} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList.id}/>
                             ))}
                         </div>
                     </div>
@@ -76,42 +72,85 @@ function Sidebar({ onChatButtonClick }) {
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link, isSelected}){
-    const [isPopUpOpen, setPopUpOpen] = useState(false);
+function ChatButton({chatname, onChatButtonClick, link, UserId, isSelected}){
+    const [isChatSettingPopup, setChatSettingPopup] = useState(false);
+    const [editingName, setEditingName] = useState(false);
+    const [newChatName, setNewChatName] = useState(chatname);
+    const inputRef = useRef(null);
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (isPopUpOpen && !event.target.closest('.Chat-Setting')) {
-                setPopUpOpen(false);
+        const handleOutsideSetting = (event) => {
+            if (isChatSettingPopup && !event.target.closest('.Sidebar-popup')) {
+                setChatSettingPopup(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('mousedown', handleOutsideSetting);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleOutsideSetting);
         };
-    }, [isPopUpOpen]);
+    }, [isChatSettingPopup]);
 
-    const togglePopUp = () => {
-        setPopUpOpen(!isPopUpOpen);
-    };
+    const toggleChatSetting = () => {
+        setChatSettingPopup(!isChatSettingPopup);
+    }
     const handleClick = () => {
-        onChatButtonClick(link);
+        onChatButtonClick(link, UserId);
+    }
+    useEffect(() => {
+        if (editingName) {
+            inputRef.current.select();
+        }
+    }, [editingName]);
+    const handleNameChange = (event) => {
+        setNewChatName(event.target.value);
+    }
+    const handleEditName = () => {
+        setChatSettingPopup(false);
+        setEditingName(true);
+    }
+    const handleKey = e=>{
+        e.code === "Enter" && handleSaveName()
+    }
+    const handleSaveName = async () => {
+        setEditingName(false);
+        if(newChatName ==="" || newChatName === chatname){
+            setNewChatName(chatname)
+        }else{
+            let chatIDRef = doc(db, "chatroom", link);
+            try {
+                await updateDoc(chatIDRef, {
+                    chatname: newChatName
+                });
+            } catch (error) {
+                console.error("Error adding document: ", error);
+            }
+        }
     };
+    const handleDeleteChat = async()=>{
+        try {
+            await deleteDoc(doc(db, "chatroom", link));
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
+    }
 
     return(
         <>
-            <div className={`ChatButton-container ${isSelected ? 'selected' : ''}`} onClick={(e) => {
-                handleClick();
-                e.stopPropagation();
-            }}>
-                <p>{chatname}</p>
-                <div className="Chat-Setting" onClick={togglePopUp}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
-                {isPopUpOpen &&
-                    <div className="Sidebar-popup">
-                        <button><FontAwesomeIcon icon={faPenToSquare} size="sm" /> เปลี่ยนชื่อ</button>
-                        <button><FontAwesomeIcon icon={faTrash} size="sm" /> ลบแชทนี้</button>
-                    </div>
-                }
+            <div className={`ChatButton-container ${isSelected ? 'selected' : ''}`} >
+                {editingName ? (
+                    <input type="text" value={newChatName} onChange={handleNameChange} onKeyDown={handleKey} ref={inputRef}/>
+                ) : (
+                    <>
+                        <p onClick={(e) => {handleClick();}}>{chatname}</p>
+                        <div className="Chat-Setting" onClick={toggleChatSetting}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
+                        {isChatSettingPopup &&
+                            <div className="Sidebar-popup">
+                                <button onClick={handleEditName}><FontAwesomeIcon icon={faPenToSquare} size="sm" /> เปลี่ยนชื่อ</button>
+                                <button onClick={handleDeleteChat}><FontAwesomeIcon icon={faTrash} size="sm" /> ลบแชทนี้</button>
+                            </div>
+                        }
+                    </>
+                )}
             </div>
         </>
     )

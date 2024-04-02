@@ -7,9 +7,11 @@ import Sidebar from '../components/Chat/Sidebar'
 
 function ChatPage() {
     const [chatId, setChatId] = useState(null);
+    const [userId, setUserId] = useState(null);
 
-    const handleChatButtonClick = (chatId) => {
+    const handleChatButtonClick = (chatId, userId) => {
         setChatId(chatId);
+        setUserId(userId);
     };
 
     return(
@@ -20,7 +22,7 @@ function ChatPage() {
                 </div>
                 <div className="Chat-Container-grid">
                     <Namechat/>
-                    <ChatContent chatId={chatId} />
+                    <ChatContent chatId={chatId} UserId={userId}/>
                 </div>
             </div>
         </>

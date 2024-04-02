@@ -14,6 +14,13 @@
     gap: 5px;
     box-sizing: border-box;
 }
+.Sidebar-grid h3 {
+    cursor: pointer;
+    background-color: var(--color-bg3);
+    width: fit-content;
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+}
 .CreateChatBTN{
     background-color: var(--color-bg3);
     border-radius: 30px;
@@ -27,7 +34,7 @@
     color: var(--color-lightgray);
 }
 .CreateChatBTN:hover {
-    background-color: var(--color-darkgray);
+    background-color: var(--color-purple);
     color: var(--color-text);
     transition: .2s;
     scale: 1.03;
@@ -69,16 +76,22 @@
     display: grid;
     grid-template-columns: 1fr auto;
 }
-.ChatButton-container a{
-    color: var(--color-text);
-}
+
 .ChatButton-container:hover{
     z-index: 0;
     background-color: var(--color-darkgray);
     transition: .2s;
 }
-.ChatButton-container:hover a{
-    color: var(--color-text);
+.ChatButton-container input {
+    font-family: "Noto Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
+    font-size: 1.2rem;
+    outline:none;
+    border: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: var(--color-lightgray);
+    padding: 0.1rem 0.2rem;
+    background: none;
 }
 .ChatButton-container.selected {
     background-color: var(--color-purple);
