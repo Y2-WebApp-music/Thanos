@@ -22,7 +22,7 @@ function ChatPage() {
                 </div>
                 <div className="Chat-Container-grid">
                     <Namechat/>
-                    <ChatContent chatId={chatId} UserId={userId}/>
+                    <ChatContent ChatroomID={chatId} UserCurrent={userId}/>
                 </div>
             </div>
         </>

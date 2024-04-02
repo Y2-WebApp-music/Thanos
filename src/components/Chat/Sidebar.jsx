@@ -11,12 +11,23 @@ function Sidebar({ onChatButtonClick }) {
     const [selectedChat, setSelectedChat] = useState(null);
     const handleHomepage = () => {navigate("/");};
     const chatRef = collection(db, "chatroom")
+    const [userId, setUserID] = useState(null)
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                setUserID(user.uid);
+            } else {
+                setUserID(null);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
-    // const [chatList, setChatList] = useState([])
-    const [chatList, setChatList] = useState([
-        {id:123 , chatname:"newchat1", UserId:"nq34itboBIRN($PWTI"},
-        {id:456 , chatname:"newchat2", UserId:"DJKFBN124LKAW1231"},
-    ])
+    const [chatList, setChatList] = useState([])
+    // const [chatList, setChatList] = useState([
+    //     {id:123 , chatname:"newchat1", UserId:"nq34itboBIRN($PWTI"},
+    //     {id:456 , chatname:"newchat2", UserId:"DJKFBN124LKAW1231"},
+    // ])
 
     const handleCreateChat = async () => {
         const newChatRoom = "New Chat";
@@ -25,28 +36,29 @@ function Sidebar({ onChatButtonClick }) {
             await addDoc(chatRef, {
                 chatname: newChatRoom,
                 TimeAdd: serverTimestamp(),
-                userId: auth.currentUser.uid
+                userId: userId
             });
         } catch (error) {
             console.error("Error adding document: ", error);
         }
     };
 
-    // useEffect(() => {
-    //     const queryChat = query(chatRef, where("userId", "==", auth.currentUser.uid),orderBy("TimeAdd", "asc"));
-    //     const unsubscribe = onSnapshot(queryChat, (snapshot) => {
-    //         let chatLists = [];
-    //         snapshot.forEach((doc) => {
-    //             chatLists.push({ ...doc.data(), id: doc.id });
-    //         });
-    //         setChatList(chatLists);
-    //     });
-    //     return () => unsubscribe();
-    // }, [chatRef]);
+    useEffect(() => {
+        // console.log("useEffect query DB ==> chatroom")
+        const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "asc"));
+        const unsubscribe = onSnapshot(queryChat, (snapshot) => {
+            let chatLists = [];
+            snapshot.forEach((doc) => {
+                chatLists.push({ ...doc.data(), id: doc.id });
+            });
+            setChatList(chatLists);
+        });
+        return () => unsubscribe();
+    }, [chatList]);
 
-    const handleChatButtonClick = (chatId, UserId) => {
+    const handleChatButtonClick = (chatId, userId) => {
         setSelectedChat(chatId);
-        onChatButtonClick(chatId, UserId);
+        onChatButtonClick(chatId, userId);
     };
 
     return(
@@ -62,7 +74,7 @@ function Sidebar({ onChatButtonClick }) {
                     <div className="ChatList-scroll">
                         <div className="ChatList">
                             {chatList.map((chatList) => (
-                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} UserId={chatList.UserId} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList.id}/>
+                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} userId={chatList.userId} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList.id}/>
                             ))}
                         </div>
                     </div>
@@ -72,7 +84,7 @@ function Sidebar({ onChatButtonClick }) {
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link, UserId, isSelected}){
+function ChatButton({chatname, onChatButtonClick, link, userId, isSelected}){
     const [isChatSettingPopup, setChatSettingPopup] = useState(false);
     const [editingName, setEditingName] = useState(false);
     const [newChatName, setNewChatName] = useState(chatname);
@@ -94,7 +106,7 @@ function ChatButton({chatname, onChatButtonClick, link, UserId, isSelected}){
         setChatSettingPopup(!isChatSettingPopup);
     }
     const handleClick = () => {
-        onChatButtonClick(link, UserId);
+        onChatButtonClick(link, userId);
     }
     useEffect(() => {
         if (editingName) {
