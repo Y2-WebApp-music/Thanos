@@ -27,43 +27,43 @@ function Sidebar({ onChatButtonClick ,chatSelect}) {
         setSelectedChat(chatSelect);
     }, [chatSelect]);
 
-    // const [chatList, setChatList] = useState([])
-    const [chatList, setChatList] = useState([
-        {id:123 , chatname:"newchat1", userId:"nq34itboBIRN($PWTI"},
-        {id:456 , chatname:"newchat2", userId:"DJKFBN124LKAW1231"},
-    ])
+    const [chatList, setChatList] = useState([])
+    // const [chatList, setChatList] = useState([
+    //     {id:123 , chatname:"newchat1", userId:"nq34itboBIRN($PWTI"},
+    //     {id:456 , chatname:"newchat2", userId:"DJKFBN124LKAW1231"},
+    // ])
 
     const handleCreateChat = async () => {
         const newChatRoom = "New Chat";
 
         try {
-            let TestNewRoom = {id:178945223 , chatname:"TestNewRoom", userId:"nq34itboBIRN($PWTI"}
+            // let newRoom = {id:178945223 , chatname:"TestNewRoom", userId:"nq34itboBIRN($PWTI"}
             setChatList(prevChatList => [...prevChatList, TestNewRoom]);
-            // let newRoom = await addDoc(chatRef, {
-            //     chatname: newChatRoom,
-            //     TimeAdd: serverTimestamp(),
-            //     userId: userId
-            // });
-            console.log(TestNewRoom.id)
-            setSelectedChat(TestNewRoom.id);
-            onChatButtonClick(TestNewRoom.id, userId);
+            let newRoom = await addDoc(chatRef, {
+                chatname: newChatRoom,
+                TimeAdd: serverTimestamp(),
+                userId: userId
+            });
+            console.log(newRoom.id)
+            setSelectedChat(newRoom.id);
+            onChatButtonClick(newRoom.id, userId);
         } catch (error) {
             console.error("Error adding document: ", error);
         }
     };
 
-    // useEffect(() => {
-    //     // console.log("useEffect query DB ==> chatroom")
-    //     const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "asc"));
-    //     const unsubscribe = onSnapshot(queryChat, (snapshot) => {
-    //         let chatLists = [];
-    //         snapshot.forEach((doc) => {
-    //             chatLists.push({ ...doc.data(), id: doc.id });
-    //         });
-    //         setChatList(chatLists);
-    //     });
-    //     return () => unsubscribe();
-    // }, [chatList]);
+    useEffect(() => {
+        // console.log("useEffect query DB ==> chatroom")
+        const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "asc"));
+        const unsubscribe = onSnapshot(queryChat, (snapshot) => {
+            let chatLists = [];
+            snapshot.forEach((doc) => {
+                chatLists.push({ ...doc.data(), id: doc.id });
+            });
+            setChatList(chatLists);
+        });
+        return () => unsubscribe();
+    }, [chatList]);
 
     const handleChatButtonClick = (chatId, userId) => {
         setSelectedChat(chatId);
