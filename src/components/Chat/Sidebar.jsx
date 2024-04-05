@@ -38,7 +38,7 @@ function Sidebar({ onChatButtonClick ,chatSelect}) {
 
         try {
             // let newRoom = {id:178945223 , chatname:"TestNewRoom", userId:"nq34itboBIRN($PWTI"}
-            setChatList(prevChatList => [...prevChatList, TestNewRoom]);
+            // setChatList(prevChatList => [...prevChatList, TestNewRoom]);
             let newRoom = await addDoc(chatRef, {
                 chatname: newChatRoom,
                 TimeAdd: serverTimestamp(),
@@ -54,7 +54,7 @@ function Sidebar({ onChatButtonClick ,chatSelect}) {
 
     useEffect(() => {
         // console.log("useEffect query DB ==> chatroom")
-        const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "asc"));
+        const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "desc"));
         const unsubscribe = onSnapshot(queryChat, (snapshot) => {
             let chatLists = [];
             snapshot.forEach((doc) => {
