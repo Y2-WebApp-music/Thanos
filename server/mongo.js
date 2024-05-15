@@ -23,8 +23,9 @@ export async function createChat(uid, document) {
         await connect();
         collectionChat = db.collection("ChatRoom");
         const result = await collectionChat.insertOne({ uid, ...document });
-        console.log(`createChat _id: ${result.insertedId}`);
+        console.log('createChat _id:', result);
         close();
+        return result;
     } catch (error) {
         console.error("Error createChat :", error);
         throw error;
@@ -43,13 +44,14 @@ export async function readChat(uid) {
         throw error;
     }
 }
-export async function updateChatName(uid, chatId, update) {
+export async function updateChatName(uid,chatId, update) {
     try {
         await connect();
         collectionChat = db.collection("ChatRoom");
+        console.log('update ==> ',update)
         const result = await collectionChat.updateOne(
-            { _id: new ObjectId(chatId), uid },
-            { $set: update }
+            { _id: new ObjectId(chatId), uid},
+            { $set: {name: update} }
         );
         console.log(`updateChatName _id: ${chatId}`);
         close();
@@ -63,10 +65,8 @@ export async function deleteChat(uid, chatId) {
     try {
         await connect();
         collectionChat = db.collection("ChatRoom");
-        console.log("uid : ",uid)
-        console.log("id : ",documentId)
         const result = await collectionChat.deleteOne({ _id: new ObjectId(chatId), uid });
-        console.log(`deleteChat _id: ${documentId}`);
+        console.log(`deleteChat _id: ${chatId}`);
         close();
     } catch (error) {
         console.error("Error deleteDocument :", error);
@@ -102,18 +102,34 @@ export async function readMessage( chatId ) {
         throw error;
     }
 }
-export async function addMessage(chatId, document) {
+export async function addMessage(id, chatId, document) {
     try {
         await connect();
         collectionMessages = db.collection("Messages");
+        console.log('id : ',id)
+        console.log('chatId : ',chatId)
+        console.log('document : ',document)
         const result = await collectionMessages.updateOne(
-            { _id: new ObjectId(chatId) },
-            { $set: document }
+            { _id: new ObjectId(id), chatId },
+            { $set: {messages:document} }
         );
         console.log(`addMessage _id: ${result.insertedId}`);
         close();
     } catch (error) {
         console.error("Error addMessage :", error);
+        throw error;
+    }
+}
+
+export async function deleteMessage(chatId) {
+    try {
+        await connect();
+        collectionMessages = db.collection("Messages");
+        const result = await collectionMessages.deleteOne({ _id: new ObjectId(chatId)});
+        console.log(`deleteMessage _id: ${chatId}`);
+        close();
+    } catch (error) {
+        console.error("Error deleteMessage :", error);
         throw error;
     }
 }

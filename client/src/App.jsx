@@ -1,12 +1,12 @@
-import React, {useContext} from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import './App.css'
+import React, { useContext } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import './App.css';
 
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import ChatPage from './pages/ChatPage'
 import { AuthContext } from './DB/Auth';
+import ChatPage from './pages/ChatPage';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -27,7 +27,8 @@ function App() {
           <Route path='chat' element={
             <ProtectedRoute>
               <ChatPage/>
-            </ProtectedRoute>}/>
+            </ProtectedRoute>}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

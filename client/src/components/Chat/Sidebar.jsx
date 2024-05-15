@@ -6,12 +6,13 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import {addDoc, collection, doc, updateDoc, deleteDoc, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 
-function Sidebar({ onChatButtonClick ,chatSelect}) {
+function Sidebar({ onChatButtonClick ,chatSelect }) {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
     const [selectedChat, setSelectedChat] = useState(null);
-    const chatRef = collection(db, "chatroom")
     const [userId, setUserID] = useState(null)
+    const [chatList, setChatList] = useState([])
+
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
@@ -21,49 +22,51 @@ function Sidebar({ onChatButtonClick ,chatSelect}) {
             }
         });
         return () => unsubscribe();
-    }, []);
-
+    }, [userId]);
     useEffect(() => {
-        setSelectedChat(chatSelect);
-    }, [chatSelect]);
-
-    const [chatList, setChatList] = useState([])
-    // const [chatList, setChatList] = useState([
-    //     {id:123 , chatname:"newchat1", userId:"nq34itboBIRN($PWTI"},
-    //     {id:456 , chatname:"newchat2", userId:"DJKFBN124LKAW1231"},
-    // ])
+        if (userId != null){
+            LoadChat( userId ,setChatList )
+        }
+    }, [userId]);
 
     const handleCreateChat = async () => {
-        const newChatRoom = "New Chat";
-
+        let result
         try {
-            // let newRoom = {id:178945223 , chatname:"TestNewRoom", userId:"nq34itboBIRN($PWTI"}
-            // setChatList(prevChatList => [...prevChatList, TestNewRoom]);
-            let newRoom = await addDoc(chatRef, {
-                chatname: newChatRoom,
-                TimeAdd: serverTimestamp(),
-                userId: userId
-            });
-            console.log(newRoom.id)
-            setSelectedChat(newRoom.id);
-            onChatButtonClick(newRoom.id, userId);
+            let newRoom
+            let chatRoomC = {
+                name: "newChatRoom",
+                uid: userId,
+                TimeCreated: new Date()
+            }
+            const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(chatRoomC)
+            })
+            console.log('test During Function ')
+            result = await response.json()
+            let messageDefault = { messages:null}
+            const message = await fetch(`http://localhost:3100/newMessageRoom?chatId=${result.insertedId}&document=${messageDefault}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageDefault)
+            }).then(
+                console.log('result ',result),
+                setSelectedChat(result.insertedId),
+                LoadChat(userId ,setChatList)
+            )
         } catch (error) {
             console.error("Error adding document: ", error);
         }
     };
 
     useEffect(() => {
-        // console.log("useEffect query DB ==> chatroom")
-        const queryChat = query(chatRef, where("userId", "==", userId),orderBy("TimeAdd", "desc"));
-        const unsubscribe = onSnapshot(queryChat, (snapshot) => {
-            let chatLists = [];
-            snapshot.forEach((doc) => {
-                chatLists.push({ ...doc.data(), id: doc.id });
-            });
-            setChatList(chatLists);
-        });
-        return () => unsubscribe();
-    }, [chatList]);
+        setSelectedChat(chatSelect);
+    }, [chatSelect]);
 
     const handleChatButtonClick = (chatId, userId) => {
         setSelectedChat(chatId);
@@ -83,7 +86,7 @@ function Sidebar({ onChatButtonClick ,chatSelect}) {
                     <div className="ChatList-scroll">
                         <div className="ChatList">
                             {chatList.map((chatList) => (
-                                <ChatButton key={chatList.id} chatname={chatList.chatname} link={chatList.id} userId={chatList.userId} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList.id}/>
+                                <ChatButton key={chatList._id} chatname={chatList.name} link={chatList._id} userId={chatList.uid} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList._id} setChatList={setChatList}/>
                             ))}
                         </div>
                     </div>
@@ -93,7 +96,7 @@ function Sidebar({ onChatButtonClick ,chatSelect}) {
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link, userId, isSelected}){
+function ChatButton({chatname, onChatButtonClick, link, userId, isSelected, setChatList}){
     const [isChatSettingPopup, setChatSettingPopup] = useState(false);
     const [editingName, setEditingName] = useState(false);
     const [newChatName, setNewChatName] = useState(chatname);
@@ -134,24 +137,37 @@ function ChatButton({chatname, onChatButtonClick, link, userId, isSelected}){
     }
     const handleSaveName = async () => {
         setEditingName(false);
-        if(newChatName ==="" || newChatName === chatname){
+        if(newChatName === "" || newChatName === chatname){
             setNewChatName(chatname)
         }else{
-            let chatIDRef = doc(db, "chatroom", link);
             try {
-                await updateDoc(chatIDRef, {
-                    chatname: newChatName
-                });
+                await fetch(`http://localhost:3100/updateChatName?uid=${userId}&chatId=${link}&update=${newChatName}`, {
+                    method: 'POST'
+                })
             } catch (error) {
                 console.error("Error adding document: ", error);
             }
         }
     };
     const handleDeleteChat = async()=>{
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         try {
-            await deleteDoc(doc(db, "chatroom", link));
+            console.log(">> deleteChat <<");
+
+            await fetch(`http://localhost:3100/deleteChat?uid=${userId}&chatId=${link}`, {
+                method: 'POST'
+            })
+            .then(
+                await fetch(`http://localhost:3100/deleteMessageRoom?chatId=${link}`, {
+                    method: 'POST'
+                }),
+                setChatSettingPopup(false),
+                await delay(1000),
+                LoadChat(userId, setChatList)
+            )
         } catch (error) {
-            console.error("Error adding document: ", error);
+            console.error("Error send post:", error);
+            throw error;
         }
     }
 
@@ -175,6 +191,44 @@ function ChatButton({chatname, onChatButtonClick, link, userId, isSelected}){
             </div>
         </>
     )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function LoadChat( userId,setChatList  ){
+    let retryCount = 0;
+    const maxRetries = 3;
+    const fetchChats = async () => {
+        try {
+            const response = await fetch(`http://localhost:3100/chatroom?uid=${userId}`);
+            const Chats = await response.json();
+            console.log('GET Chats ',Chats)
+            if (Object.keys(Chats).length === 0 && Chats.constructor === Object) {
+                console.log("Chats is empty. Retrying...");
+                retryCount++;
+                if (retryCount <= maxRetries) {
+                    setTimeout(fetchChats, 1000);
+                } else {
+                    console.log("Max retries exceeded. Unable to fetch chat.");
+                }
+            } else {
+                setChatList(Chats);
+            }
+        } catch (error) {
+            console.error('Error fetching chat:', error);
+            setTimeout(fetchChats, 1000);
+        }
+    };
+    fetchChats();
 }
 
 export default Sidebar

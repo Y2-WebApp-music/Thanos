@@ -64,7 +64,6 @@
 }
 
 .ChatButton-container {
-    z-index: 0;
     position: relative;
     margin: 0rem 0;
     margin-bottom: 0.5rem;
@@ -78,7 +77,6 @@
 }
 
 .ChatButton-container:hover{
-    z-index: 0;
     background-color: var(--color-darkgray);
     transition: .2s;
 }
@@ -120,8 +118,8 @@
 .Sidebar-popup {
     position: absolute;
     z-index: 8;
-    top: 20px;
-    right: 0;
+    top: 22px;
+    right: 0px;
     background-color: var(--color-bg3);
     padding: 0.5rem 0.5rem;
     border: solid;

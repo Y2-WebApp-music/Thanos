@@ -1,6 +1,6 @@
 import express, { json } from 'express'
 import cors from 'cors'
-import { readChat, updateChatName, deleteChat, readMessage, addMessage, createChat, createMessages } from './mongo.js';
+import { readChat, updateChatName, deleteChat, readMessage, addMessage, createChat, createMessages, deleteMessage } from './mongo.js';
 // const tf = require('@tensorflow/tfjs-node'); // Or use 'torch' for PyTorch models
 
 const app = express();
@@ -30,6 +30,7 @@ app.post('/addChatRoom', (req, res)=>{
     const uid = req.query.uid;
     const document = req.body;
     createChat(uid,document)
+    .then(data => res.json(data))
     .catch(err => res.json(err))
 })
 app.get('/chatroom', async (req, res) => {
@@ -41,11 +42,11 @@ app.get('/chatroom', async (req, res) => {
 app.post('/updateChatName', async (req, res) => {
     const uid = req.query.uid;
     const chatId = req.query.chatId;
-    const update = req.query.uid;
+    const update = req.query.update;
     updateChatName(uid, chatId, update)
     .catch(err => res.json(err))
 })
-app.post('/deletePlan', (req, res)=>{
+app.post('/deleteChat', (req, res)=>{
     const uid = req.query.uid;
     const chatId = req.query.chatId;
     deleteChat(uid, chatId)
@@ -68,11 +69,16 @@ app.get('/messages', async (req, res) => {
 })
 app.post('/addMessages', (req, res)=>{
     const chatId = req.query.chatId;
+    const id = req.query.id;
     const document = req.body;
-    addMessage(chatId, document)
+    addMessage(id, chatId, document)
     .catch(err => res.json(err))
 })
-
+app.post('/deleteMessageRoom', (req, res)=>{
+    const chatId = req.query.chatId;
+    deleteMessage(chatId)
+    .catch(err => res.json(err))
+})
 
 
 const PORT = process.env.PORT || 3100;
