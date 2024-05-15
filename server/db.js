@@ -1,22 +1,23 @@
-import { MongoClient, ObjectId } from 'mongodb';
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const tf = require('@tensorflow/tfjs-node'); // Or use 'torch' for PyTorch models
 
-const url = "mongodb+srv://Guynut:<password>@clustercapstone.ssajl5d.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCapstone"
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
-const client = new MongoClient(url);
-
-let db;
-let collection;
-
-async function connect() {
-    await client.connect();
-    console.log('')
-    console.log("==> Connected to MongoDB");
-    db = client.db("Plan");
-    collection = db.collection("Plans");
+let model;
+async function loadModel() {
+    model = await tf.loadLayersModel('file://path_to_your_model/model.json');
 }
+loadModel();
 
-async function close() {
-    await client.close();
-    console.log("Closed connection to MongoDB ==>");
-    console.log('')
-}
+app.post('/predict', async (req, res) => {
+    const inputs = tf.tensor(req.body.inputs);
+    const predictions = model.predict(inputs);
+    res.json(predictions.arraySync());
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
