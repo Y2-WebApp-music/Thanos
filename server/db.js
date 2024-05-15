@@ -1,26 +1,27 @@
 import express, { json } from 'express'
 import cors from 'cors'
-import { readChat, updateChatName, deleteChat, readMessage, addMessage, createChat, createMessages } from './mongo';
-const tf = require('@tensorflow/tfjs-node'); // Or use 'torch' for PyTorch models
+import { readChat, updateChatName, deleteChat, readMessage, addMessage, createChat, createMessages } from './mongo.js';
+// const tf = require('@tensorflow/tfjs-node'); // Or use 'torch' for PyTorch models
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(json())
+// app.use(bodyParser.json());
 
-let model;
-async function loadModel() {
-    model = await tf.loadLayersModel('file://path_to_your_model/model.json');
-}
-loadModel();
+// let model;
+// async function loadModel() {
+//     model = await tf.loadLayersModel('file://path_to_your_model/model.json');
+// }
+// loadModel();
 
-// ============
-//  Model POST
-// ============
-app.post('/predict', async (req, res) => {
-    const inputs = tf.tensor(req.body.inputs);
-    const predictions = model.predict(inputs);
-    res.json(predictions.arraySync());
-});
+// // ============
+// //  Model POST
+// // ============
+// app.post('/predict', async (req, res) => {
+//     const inputs = tf.tensor(req.body.inputs);
+//     const predictions = model.predict(inputs);
+//     res.json(predictions.arraySync());
+// });
 
 // ======================
 //  Chat Room GET and POST
@@ -74,5 +75,5 @@ app.post('/addMessages', (req, res)=>{
 
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3100;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

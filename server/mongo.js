@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb';
 
-const url = "mongodb+srv://Guynut:<password>@clustercapstone.ssajl5d.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCapstone"
+const url = "mongodb+srv://Guynut:1234@clustercapstone.ssajl5d.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCapstone"
 
 const client = new MongoClient(url);
 
