@@ -42,7 +42,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
     };
     useEffect(() => {
         autoExpand();
-    }, []);
+    }, [newMessage]);
 
     const handleKey = (e) =>{
         if (textareaRef.current && textareaRef.current.value === '') {
@@ -79,9 +79,9 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                     console.log(' From Empty ',result.insertedId),
                     ChatSelect(result.insertedId),
                     onChatButtonClick(result.insertedId, userId),
-                    LoadChat(userId ,setChatList),
                     setNewMessage(""),
                     autoExpand(),
+                    LoadChat(userId ,setChatList),
                 )
             } catch (error) {
                 console.error("Error adding document: ", error);
@@ -101,18 +101,29 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(send)
+            })
+            console.log('newMessage is =>',newMessage)
+            const answer = await fetch(`http://localhost:3100/predict?input=${newMessage}`, {
+                method: 'POST'
             }).then(
                 setNewMessage(""),
                 autoExpand()
             )
+            // .then(
+            //     setNewMessage(""),
+            //     autoExpand()
+            // )
         }
     }
+    useEffect(() => {
+        chatContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+    }, [ListText]);
 
     return(
         <>
             <div className="ChatContent-container">
-                <div className="chat-container-scroll">
-                    <div className="chat-container-Empty" ref={chatContainerRef}>
+                <div className="chat-container-scroll" >
+                    <div className="chat-container-Empty" >
                         {chatId === null || ListText === null?(
                             <>
                             <div className="NewChat-Container">
@@ -120,7 +131,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                             </div>
                             </>
                         ):(
-                            <div className="chat-container">
+                            <div className="chat-container" id="scroller" ref={chatContainerRef}>
                                 {ListText.map((message,index) => (
                                     message.who === "model" ? (
                                         <ModelChat key={index} text={message.text} />
@@ -128,6 +139,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                                         <UserChat key={index} text={message.text} user={auth.currentUser.displayName} photoURL={auth.currentUser.photoURL} />
                                     )
                                 ))}
+                                <div ref={chatContainerRef}></div>
                                 <ModelSkeleton/>
                             </div>
                         )}
