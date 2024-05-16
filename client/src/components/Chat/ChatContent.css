@@ -61,7 +61,6 @@ textarea::-webkit-scrollbar {
     transition: .2s;
 }
 .input-Container button:hover #faPaperPlane{
-    color: var(--color-text);
     transition: .2s;
 }
 .chat-container-scroll{

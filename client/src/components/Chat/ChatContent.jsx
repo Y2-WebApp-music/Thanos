@@ -2,61 +2,86 @@ import React, { useRef, useEffect, useState } from "react";
 import './ChatContent.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import { auth, db } from '/src/DB/firebase-config.js'
-import {addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy} from 'firebase/firestore'
+import { auth } from '/src/DB/firebase-config.js'
 
 
-function ChatContent({ ChatroomID, UserCurrent, ChatSelect, messages, ListText, setListText}) {
-    const [chatId, setChatId] = useState(ChatroomID)
-    const [UserId, setUserId] = useState(UserCurrent)
+function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurrent, ChatSelect, messages}) {
+    const [ListText, setListText] = useState(null)
+    const [userId, setUserID] = useState(UserCurrent)
+
     useEffect(() => {
-        setChatId(ChatroomID);
-        setUserId(UserCurrent);
-    }, [ChatroomID])
+        if (messages != null){
+            setListText(messages.messages)
+            console.log('ListText messages',messages.messages)
+        } else return;
+    }, [messages]);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                setUserID(user.uid);
+            } else {
+                setUserID(null);
+            }
+        });
+        return () => unsubscribe();
+    }, [userId]);
 
     const textareaRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [newMessage, setNewMessage] = useState("")
-    const messagesRef = collection(db, "messages")
 
     const autoExpand = () => {
         const textarea = textareaRef.current;
         textarea.style.height = '1.5em';
         textarea.style.height = Math.min(textarea.scrollHeight, 170) + 'px';
     };
-
     const handleChange = () => {
         autoExpand();
     };
+    useEffect(() => {
+        autoExpand();
+    }, []);
 
-    const handleKey = e=>{
-        e.code === "Enter" && handleSubmit()
+    const handleKey = (e) =>{
+        if (textareaRef.current && textareaRef.current.value === '') {
+            e.target.parentElement.querySelector('button').setAttribute('disabled', 'disabled');
+        } else {
+            e.target.parentElement.querySelector('button').removeAttribute('disabled');
+            e.code === "Enter" && handleSubmit()
+        }
     }
-
-    const chatRef = collection(db, "chatroom")
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         if (newMessage === "")return;
         if (chatId === null ){
             try {
-                // let newChatRef = {id:37485698345 , chatname:"FromChatContent", userId:"BLHJRV489giuLGRIU24"}
-                const  newChatRef = await addDoc(chatRef, {
-                    chatname: "newChatRoom",
-                    TimeAdd: serverTimestamp(),
-                    userId: auth.currentUser.uid
-                });
-                setChatId(newChatRef.id);
-                setUserId(auth.currentUser.uid);
-                await addDoc(messagesRef, {
-                    chatId: newChatRef.id,
-                    text: newMessage,
-                    TimeAt: serverTimestamp(),
-                    userId: auth.currentUser.uid
-                });
-                ChatSelect(newChatRef.id)
-                setNewMessage("")
-                autoExpand();
+                let result
+                let chatRoomC = {
+                    name: "newChatRoom",
+                    uid: userId,
+                    TimeCreated: new Date(),
+                    messages:[{who: 'user', text: newMessage}]
+                }
+                const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(chatRoomC)
+                })
+                delay(1000)
+                .then(
+                    result = await response.json(),
+                    console.log(' From Empty ',result.insertedId),
+                    ChatSelect(result.insertedId),
+                    onChatButtonClick(result.insertedId, userId),
+                    LoadChat(userId ,setChatList),
+                    setNewMessage(""),
+                    autoExpand(),
+                )
             } catch (error) {
                 console.error("Error adding document: ", error);
             }
@@ -69,7 +94,7 @@ function ChatContent({ ChatroomID, UserCurrent, ChatSelect, messages, ListText, 
                 setListText([...ListText, {who: 'user', text: newMessage}])
                 send = [...ListText, {who: 'user', text: newMessage}]
             }
-            await fetch(`http://localhost:3100/addMessages?id=${messages._id}&chatId=${chatId}&document=${send}`, {
+            await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -81,10 +106,6 @@ function ChatContent({ ChatroomID, UserCurrent, ChatSelect, messages, ListText, 
             )
         }
     }
-
-    useEffect(() => {
-        autoExpand();
-    }, []);
 
     return(
         <>
@@ -118,7 +139,9 @@ function ChatContent({ ChatroomID, UserCurrent, ChatSelect, messages, ListText, 
                             onChange={(e) => {handleChange(e); setNewMessage(e.target.value);}}
                             value={newMessage}
                         ></textarea>
-                        <button type="submit"> <FontAwesomeIcon icon={faPaperPlane} size="xl" id="faPaperPlane"/> </button>
+                        <button type="submit">
+                            <FontAwesomeIcon icon={faPaperPlane} size="xl" style={{ color: newMessage ? 'white' : '' }} id="faPaperPlane"/>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -134,7 +157,7 @@ function UserChat({ text,user, photoURL }) {
                     <p>{user}</p>
                     <img src={photoURL} alt="" />
                 </div>
-                <p className="UserChat-text">{text}</p>
+                <div dangerouslySetInnerHTML={{ __html: `${text}`.replace(/\n/g, '<br>') }} className="UserChat-text"/>
             </div>
         </>
     );

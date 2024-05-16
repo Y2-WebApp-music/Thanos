@@ -61,9 +61,12 @@ button {
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  /* outline: 4px auto -webkit-focus-ring-color; */
+  outline: none;
+  box-shadow: none;
 }
 
 @media (prefers-color-scheme: light) {

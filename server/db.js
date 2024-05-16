@@ -1,6 +1,6 @@
 import express, { json } from 'express'
 import cors from 'cors'
-import { readChat, updateChatName, deleteChat, readMessage, addMessage, createChat, createMessages, deleteMessage } from './mongo.js';
+import { readChat, updateChatName, deleteChat, createChat, readMessages, addMessage } from './mongo.js';
 // const tf = require('@tensorflow/tfjs-node'); // Or use 'torch' for PyTorch models
 
 const app = express();
@@ -55,31 +55,20 @@ app.post('/deleteChat', (req, res)=>{
 // ======================
 //  Messages GET and POST
 // ======================
-app.post('/newMessageRoom', (req, res)=>{
-    const chatId = req.query.chatId;
-    const document = req.body;
-    createMessages(chatId, document)
-    .catch(err => res.json(err))
-})
 app.get('/messages', async (req, res) => {
-    const chatId = req.query.chatId;
-    readMessage(chatId)
+    const id = req.query.id;
+    const uid = req.query.uid;
+    readMessages(id, uid)
     .then(data => res.json(data))
     .catch(err => res.json(err))
 })
-app.post('/addMessages', (req, res)=>{
-    const chatId = req.query.chatId;
+app.post('/addMessage', (req, res)=>{
     const id = req.query.id;
     const document = req.body;
-    addMessage(id, chatId, document)
+    addMessage(id ,document)
+    .then(data => res.json(data))
     .catch(err => res.json(err))
 })
-app.post('/deleteMessageRoom', (req, res)=>{
-    const chatId = req.query.chatId;
-    deleteMessage(chatId)
-    .catch(err => res.json(err))
-})
-
 
 const PORT = process.env.PORT || 3100;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
