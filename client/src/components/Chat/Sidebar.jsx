@@ -66,12 +66,6 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
         onChatButtonClick(chatId, userId);
     };
 
-    if (chatList.length === 0) {
-        console.log('For load => ',chatList)
-    } else {
-        console.log('Out load => ',chatList)
-    }
-
     return(
         <>
             <div className="Sidebar-Container">

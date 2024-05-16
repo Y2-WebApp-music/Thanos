@@ -14,14 +14,17 @@ app.use(json())
 // }
 // loadModel();
 
-// // ============
-// //  Model POST
-// // ============
-// app.post('/predict', async (req, res) => {
-//     const inputs = tf.tensor(req.body.inputs);
-//     const predictions = model.predict(inputs);
-//     res.json(predictions.arraySync());
-// });
+// ============
+//  Model POST
+// ============
+app.post('/predict', async (req, res) => {
+    const inputs = req.query.input;
+    console.log('inputs of predict is ===> ',inputs)
+    // const predictions = model.predict(inputs);
+    // res.json(predictions.arraySync())
+    // .then(data => res.json(data))
+    // .catch(err => res.json(err))
+});
 
 // ======================
 //  Chat Room GET and POST
