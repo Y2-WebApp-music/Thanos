@@ -74,6 +74,7 @@
     transition: .2s;
     display: grid;
     grid-template-columns: 1fr auto;
+    animation: growUP .5s ;
 }
 
 .ChatButton-container:hover{

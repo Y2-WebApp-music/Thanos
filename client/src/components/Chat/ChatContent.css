@@ -24,7 +24,7 @@
     grid-template-columns: 1fr auto;
     gap: 10px;
     padding: 0.8rem 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
     margin-top: 0.4rem;
     justify-items: center;
     align-items: flex-end;
@@ -116,9 +116,6 @@ textarea::-webkit-scrollbar {
     border-radius: 20px;
 }
 
-
-
-
 .ModelChat-Container {
     width: 90%;
     display: flex;
@@ -163,4 +160,11 @@ textarea::-webkit-scrollbar {
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: growUP 1s ;
+}
+.warning{
+    text-align: center;
+    margin: 0 0;
+    font-size: 0.7rem;
+    color: var(--color-darkgray);
 }

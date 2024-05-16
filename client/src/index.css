@@ -81,3 +81,26 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@keyframes pulse {
+  0% {
+      background-color: rgb(65, 65, 65);
+  }
+  60% {
+      background-color: rgb(75, 75, 75);
+  }
+  100% {
+      background-color: rgb(65, 65, 65);
+  }
+}
+
+@keyframes growUP {
+  0%{
+      opacity: 0;
+      transform: translateY(5px);
+  }
+  100%{
+      opacity: 1;
+      transform: translateY(0px);
+  }
+}

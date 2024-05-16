@@ -3,6 +3,7 @@ import './ChatContent.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { auth } from '/src/DB/firebase-config.js'
+import ModelSkeleton from "../Loading/ModelWait";
 
 
 function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurrent, ChatSelect, messages}) {
@@ -115,7 +116,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                         {chatId === null || ListText === null?(
                             <>
                             <div className="NewChat-Container">
-                                <h1>How can I help you?</h1>
+                                <h1>เริ่มใช้ 1Man&3Guy</h1>
                             </div>
                             </>
                         ):(
@@ -127,6 +128,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                                         <UserChat key={index} text={message.text} user={auth.currentUser.displayName} photoURL={auth.currentUser.photoURL} />
                                     )
                                 ))}
+                                <ModelSkeleton/>
                             </div>
                         )}
                     </div>
@@ -144,6 +146,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                         </button>
                     </form>
                 </div>
+                <p className="warning">1Man&3Guy มีโอกาสผิดพลาดได้. กรุณาเช็คข้อมูลก่อนทุกครั้ง.</p>
             </div>
         </>
     )

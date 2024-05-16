@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsis, faCirclePlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { auth, db } from '/src/DB/firebase-config.js'
 import { useNavigate } from 'react-router-dom'
+import SidebarSkeleton from "../Loading/LoadSidebar";
 
 function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList }) {
     const navigate = useNavigate();
@@ -65,6 +66,12 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
         onChatButtonClick(chatId, userId);
     };
 
+    if (chatList.length === 0) {
+        console.log('For load => ',chatList)
+    } else {
+        console.log('Out load => ',chatList)
+    }
+
     return(
         <>
             <div className="Sidebar-Container">
@@ -76,11 +83,15 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
                         </button>
                     </div>
                     <div className="ChatList-scroll">
-                        <div className="ChatList">
-                            {chatList.map((chatList) => (
-                                <ChatButton key={chatList._id} chatname={chatList.name} link={chatList._id} userId={chatList.uid} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList._id} setChatList={setChatList} LoadChat={LoadChat}/>
-                            ))}
-                        </div>
+                        {/* <SidebarSkeleton/> */}
+                        {chatList.length === 0 ? <SidebarSkeleton/>
+                        :
+                            <div className="ChatList">
+                                {chatList.map((chatList) => (
+                                    <ChatButton key={chatList._id} chatname={chatList.name} link={chatList._id} userId={chatList.uid} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList._id} setChatList={setChatList} LoadChat={LoadChat}/>
+                                ))}
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
