@@ -143,24 +143,54 @@ textarea::-webkit-scrollbar {
 }
 
 .ModelChat-text{
+    width: auto;
+    max-width: 70%;
+    overflow: hidden;
     background-color: var(--color-bg3);
-    width: max-content;
-    max-width: 70% ;
     padding: 0.5rem 1rem;
     border-radius: 20px;
+    /* animation: typingBG 4s ; */
 }
+@keyframes typingBG {
+    0% {
+        background: linear-gradient(180deg, var(--color-bg3) 0%, rgba(224, 224, 224, 0) 100%);
+    }
+    100% {
+        background: linear-gradient(180deg, var(--color-bg3) 100%, rgba(224, 224, 224, 0) 0%);
+    }
+}
+.ModelChat-text p{
+    /* background-color: brown; */
+    width: 100%;
+    overflow: hidden;
+    /* animation: typing 3.5s steps(30, end) */
+}
+
 .chat-container-Empty{
     width: 100%;
     height: 100%;
 }
 .NewChat-Container{
-    /* background-color: rgb(121, 121, 120); */
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: growUP 1s ;
+}
+.NewChat-Container div {
+    width: fit-content;
+}
+.NewChat-Container div h1{
+    color: #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+    line-height: 2em;
+    animation: typing 1.5s steps(30, end)
+}
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
 }
 .warning{
     text-align: center;

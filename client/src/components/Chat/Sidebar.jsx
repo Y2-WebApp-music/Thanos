@@ -33,7 +33,6 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
 
     const handleCreateChat = async () => {
         let result
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         try {
             let chatRoom = {
                 name: "newChatRoom",
@@ -48,7 +47,7 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
                 },
                 body: JSON.stringify(chatRoom)
             })
-            delay(1000)
+            await new Promise(resolve => setTimeout(resolve, 1000))
             .then(
                 result = await response.json(),
                 console.log('result ',result),
@@ -147,7 +146,6 @@ function ChatButton({chatname, onChatButtonClick, link, userId, isSelected, setC
         }
     };
     const handleDeleteChat = async()=>{
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         try {
             console.log(">> deleteChat <<");
 
@@ -156,7 +154,7 @@ function ChatButton({chatname, onChatButtonClick, link, userId, isSelected, setC
             })
             .then(
                 setChatSettingPopup(false),
-                await delay(1000),
+                await new Promise(resolve => setTimeout(resolve, 1200)),
                 LoadChat(userId, setChatList)
             )
         } catch (error) {
