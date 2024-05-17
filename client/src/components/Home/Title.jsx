@@ -22,11 +22,13 @@ function Title() {
         <>
             <div className="Title-container">
                 <div className="Title-text">
-                    <h1>Thanos</h1>
+                    <div>
+                        <h1>Thanos</h1>
+                    </div>
                     <p>ค้นหาประมวลกฎหมายแพ่งและพาณิชย์</p>
                 </div>
                 <div className="formStartButton">
-                    <button className="StartButton" onClick={handleStartChat}>เริ่มแชท</button>
+                    <button className="StartButton" onClick={handleStartChat}>เริ่มใช้งาน</button>
                 </div>
             </div>
             <img src="/public/icons/legalScales.png" alt="" className="title-background"/>

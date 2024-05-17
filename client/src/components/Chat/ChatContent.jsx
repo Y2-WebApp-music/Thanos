@@ -19,7 +19,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     useEffect(() => {
         if (messages != null){
             setListText(messages.messages)
-            console.log('ListText messages',messages.messages)
         } else {
             setListText(null)
         };

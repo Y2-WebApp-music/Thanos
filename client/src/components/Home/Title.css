@@ -36,19 +36,45 @@
     width: 100%;
     align-self:flex-end;
 }
-.Title-text h1 {
+.Title-text div h1 {
+    overflow: hidden;
+    white-space: nowrap;
+    /* border-right: .1em solid rgb(255, 255, 255); */
     color: var(--color-purple);
     font-size: 7rem;
     margin: 0 0;
     margin-left: 10rem;
+    letter-spacing: .1em;
+    animation:
+        typing 2s steps(40, end),
+        blink-caret 1.5s step-end, 
+        growUP 1.5s  ;
 }
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+@keyframes blink-caret {
+    from, to { border-right: .1em solid rgb(255, 255, 255);border-color: transparent }
+    20% { border-color: rgb(255, 255, 255); }
+    40% { border-color: rgb(255, 255, 255); }
+    60% { border-color: rgb(255, 255, 255); }
+    80% { border-color: rgb(255, 255, 255); }
+}
+
+.Title-text div {
+    width: fit-content;
+}
+
 
 .Title-text p {
     color: var(--color-text);
     font-size: 2rem;
     margin: 0 0;
-    margin-left: 10rem;
-    transform: translateX(20px);
+    margin-left: 11rem;
+    /* transform: translateX(20px); */
+    animation:
+        growUP 1.5s ;
 }
 
 .formStartButton{
@@ -68,11 +94,19 @@
     margin-right: 12rem;
     margin-top: 7rem;
     transition: .2s;
+    box-shadow: 0 0rem 0.6rem rgba(255, 255, 255, 0.564);
+}
+@keyframes flow {
+    0% { background-color: #9758EA; scale: 1.05;}
+    25% { background-color: #b461e8; scale: 1.08;}
+    50% { background-color: #9758EA; scale: 1.05;}
+    75% { background-color: #b461e8; scale: 1.08;}
+    100% { background-color: #9758EA; scale: 1.05;}
 }
 
 .StartButton:hover{
-    box-shadow: 0 0rem 0.4rem rgba(137, 137, 137, 0.85);
     scale: 1.05;
     background-color: var(--color-purple);
     transition: .2s;
+    animation: flow 4s infinite;
 }
