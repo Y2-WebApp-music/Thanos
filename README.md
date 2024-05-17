@@ -1,5 +1,5 @@
 # 1man-3guy
-## Web app For CapStone Project
+Web app For CapStone Project
 
 ## Client 💻
 cd client => ```npm run dev```
@@ -11,7 +11,8 @@ Python => cd server
 Mongo => cd server 
 ``` npm start ```
 
-All npm install
+### 📗 All npm install
+on client file
 ```
 npm i --save @fortawesome/fontawesome-svg-core
 npm i --save @fortawesome/free-solid-svg-icons
@@ -21,11 +22,18 @@ npm i --save @fortawesome/react-fontawesome@latest
 npm i react-router-dom
 npm i firebase
 npm install axios
-npm install express
-npm install mongodb
 npm i firebase universal-cookie
 npm i @firebase/firestore
-npm i axios
+```
+on server file
+```
+npm install express
+npm install mongodb
+npm install nodemon
+npm install cors
+npm install body-parser
 ```
 
-python library
+### 📙 python library
+```
+```
