@@ -1,5 +1,15 @@
 # 1man-3guy
-## Web base CapStone
+## Web app For CapStone Project
+
+## Client 💻
+cd client => ```npm run dev```
+
+## Server 🔌
+Python => cd server 
+```python app.py```
+
+Mongo => cd server 
+``` npm start ```
 
 All npm install
 ```
@@ -15,4 +25,7 @@ npm install express
 npm install mongodb
 npm i firebase universal-cookie
 npm i @firebase/firestore
+npm i axios
 ```
+
+python library
