@@ -15,7 +15,11 @@ function ChatPage() {
     const handleChatButtonClick = (chatId, userId) => {
         setChatId(chatId);
         setUserId(userId);
-        LoadMessages(chatId, userId, setMessages)
+        if (chatId === null && userId === null){
+            setMessages(null)
+        } else {
+            LoadMessages(chatId, userId, setMessages)
+        }
         console.log('ChatPage Get chatId:',chatId)
         console.log('ChatPage Get userId:',userId)
     };

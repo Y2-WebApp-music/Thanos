@@ -7,16 +7,22 @@ import ModelSkeleton from "../Loading/ModelWait";
 import axios from 'axios';
 
 
-function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurrent, ChatSelect, messages}) {
+function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurrent, ChatSelect, messages}) {
     const [ListText, setListText] = useState(null)
     const [userId, setUserID] = useState(UserCurrent)
     const [loading, setLoading] = useState(false);
+    const textareaRef = useRef(null);
+    const chatContainerRef = useRef(null);
+    const [newMessage, setNewMessage] = useState("")
+    const EmptyChat = ''
 
     useEffect(() => {
         if (messages != null){
             setListText(messages.messages)
             console.log('ListText messages',messages.messages)
-        } else return;
+        } else {
+            setListText(null)
+        };
     }, [messages]);
 
     useEffect(() => {
@@ -29,10 +35,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
         });
         return () => unsubscribe();
     }, [userId]);
-
-    const textareaRef = useRef(null);
-    const chatContainerRef = useRef(null);
-    const [newMessage, setNewMessage] = useState("")
 
     const autoExpand = () => {
         const textarea = textareaRef.current;
@@ -63,6 +65,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
         autoExpand()
         if (ListText === null){
             setListText([{who: 'user', text: message}])
+            console.log('>> chatId << is : ',chatId)
         } else{
             setListText([...ListText,{who: 'user', text: message}])
         }
@@ -71,9 +74,10 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                 input: message
             });
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('wait 1 second DONE')
             if (chatId === null ){
+                console.log('Create New Chat')
                 try {
                     if (answer.data.prediction){
                         let result
@@ -90,21 +94,20 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                             },
                             body: JSON.stringify(chatRoomC)
                         })
-                            setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
-                            await new Promise(resolve => setTimeout(resolve, 2000))
-                            result = await response.json()
-                            console.log(' From Empty ',result.insertedId)
-                            ChatSelect(result.insertedId)
-                            onChatButtonClick(result.insertedId, userId)
-                            LoadChat(userId ,setChatList)
-                            setLoading(false);
+                        setLoading(false);
+                        setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
+                        await new Promise(resolve => setTimeout(resolve, 500))
+                        result = await response.json()
+                        console.log(' From Empty ',result.insertedId)
+                        ChatSelect(result.insertedId)
+                        onChatButtonClick(result.insertedId, userId)
+                        LoadChat(userId ,setChatList)
                     }
                 } catch (error) {
                     console.error("Error adding document: ", error);
                 }
-            } else{
+            } else {
                 let send
-                console.log('newMessage is =>',message)
                 try {
                     if (answer.data.prediction){
                         setLoading(false);
@@ -136,12 +139,13 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
         chatContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
     }, [ListText]);
 
+
     return(
         <>
             <div className="ChatContent-container">
                 <div className="chat-container-scroll" >
                     <div className="chat-container-Empty" >
-                        {chatId === null || ListText === null?(
+                        { ListText === null?(
                             <>
                             <div className="NewChat-Container">
                                 <div>
@@ -150,17 +154,17 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                             </div>
                             </>
                         ):(
-                            <div className="chat-container" id="scroller" ref={chatContainerRef}>
-                                {ListText.map((message,index) => (
-                                    message.who === "model" ? (
-                                        <ModelChat key={index} text={message.text} />
-                                    ) : (
-                                        <UserChat key={index} text={message.text} user={auth.currentUser.displayName} photoURL={auth.currentUser.photoURL} />
-                                    )
-                                ))}
-                                {loading && <ModelSkeleton />}
-                                <div ref={chatContainerRef}></div>
-                            </div>
+                                <div className="chat-container" id="scroller" ref={chatContainerRef}>
+                                    {ListText.map((message,index) => (
+                                        message.who === "model" ? (
+                                            <ModelChat key={index} text={message.text} />
+                                        ) : (
+                                            <UserChat key={index} text={message.text} user={auth.currentUser.displayName} photoURL={auth.currentUser.photoURL} />
+                                        )
+                                    ))}
+                                    {loading && <ModelSkeleton />}
+                                    <div ref={chatContainerRef}></div>
+                                </div>
                         )}
                     </div>
                 </div>

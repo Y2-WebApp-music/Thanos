@@ -80,8 +80,8 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
                         {chatList.length === 0 ? <SidebarSkeleton/>
                         :
                             <div className="ChatList">
-                                {chatList.map((chatList) => (
-                                    <ChatButton key={chatList._id} chatname={chatList.name} link={chatList._id} userId={chatList.uid} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === chatList._id} setChatList={setChatList} LoadChat={LoadChat}/>
+                                {chatList.map((item) => (
+                                    <ChatButton key={item._id} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat}/>
                                 ))}
                             </div>
                         }
@@ -92,7 +92,7 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link, userId, isSelected, setChatList, LoadChat}){
+function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSelected, setChatList, LoadChat}){
     const [isChatSettingPopup, setChatSettingPopup] = useState(false);
     const [editingName, setEditingName] = useState(false);
     const [newChatName, setNewChatName] = useState(chatname);
@@ -140,6 +140,10 @@ function ChatButton({chatname, onChatButtonClick, link, userId, isSelected, setC
                 await fetch(`http://localhost:3100/updateChatName?uid=${userId}&chatId=${link}&update=${newChatName}`, {
                     method: 'POST'
                 })
+                .then(
+                    await new Promise(resolve => setTimeout(resolve, 1000)),
+                    LoadChat(userId ,setChatList)
+                )
             } catch (error) {
                 console.error("Error adding document: ", error);
             }
@@ -148,12 +152,14 @@ function ChatButton({chatname, onChatButtonClick, link, userId, isSelected, setC
     const handleDeleteChat = async()=>{
         try {
             console.log(">> deleteChat <<");
-
+            let deleteArray = chatList.filter(item => item._id !== `${link}`);
+            setChatList(deleteArray)
             await fetch(`http://localhost:3100/deleteChat?uid=${userId}&chatId=${link}`, {
                 method: 'POST'
             })
             .then(
                 setChatSettingPopup(false),
+                onChatButtonClick(null, null),
                 await new Promise(resolve => setTimeout(resolve, 1200)),
                 LoadChat(userId, setChatList)
             )
