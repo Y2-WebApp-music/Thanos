@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { auth } from '/src/DB/firebase-config.js'
 import ModelSkeleton from "../Loading/ModelWait";
+import axios from 'axios';
 
 
 function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurrent, ChatSelect, messages}) {
     const [ListText, setListText] = useState(null)
     const [userId, setUserID] = useState(UserCurrent)
+    const [prediction, setPrediction] = useState(null);
 
     useEffect(() => {
         if (messages != null){
@@ -55,64 +57,75 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
+        setPrediction(null);
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         if (newMessage === "")return;
-        if (chatId === null ){
-            try {
-                let result
-                let chatRoomC = {
-                    name: "newChatRoom",
-                    uid: userId,
-                    TimeCreated: new Date(),
-                    messages:[{who: 'user', text: newMessage}]
+        try {
+            const answer = await axios.post('http://127.0.0.1:5510/predict', {
+                    input: newMessage
+                });
+                if (chatId === null ){
+                    try {
+                        if (answer.data.prediction){
+                            let result
+                            let chatRoomC = {
+                                name: "newChatRoom",
+                                uid: userId,
+                                TimeCreated: new Date(),
+                                messages:[{who: 'user', text: newMessage},{who: 'model', text: answer.data.prediction}]
+                            }
+                            const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(chatRoomC)
+                            })
+                            delay(1000)
+                            .then(
+                                result = await response.json(),
+                                console.log(' From Empty ',result.insertedId),
+                                ChatSelect(result.insertedId),
+                                onChatButtonClick(result.insertedId, userId),
+                                setNewMessage(""),
+                                autoExpand(),
+                                LoadChat(userId ,setChatList),
+                            )
+                        }
+                    } catch (error) {
+                        console.error("Error adding document: ", error);
+                    }
+                } else{
+                    let send
+                    console.log('newMessage is =>',newMessage)
+                    try {
+                        delay(1000)
+                        setPrediction(answer.data.prediction);
+                        if (answer.data.prediction){
+                            console.log('Predict : ',answer.data.prediction)
+                            if (ListText === null){
+                                setListText([{who: 'user', text: newMessage}, {who: 'model', text: answer.data.prediction}])
+                                send = [{who: 'user', text: newMessage}, {who: 'model', text: answer.data.prediction}]
+                            } else{
+                                setListText([...ListText,{who: 'user', text: newMessage}, {who: 'model', text: answer.data.prediction}])
+                                send = [...ListText,{who: 'user', text: newMessage}, {who: 'model', text: answer.data.prediction}]
+                            }
+                            await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(send)
+                            })
+                        }
+                    } catch (error) {
+                        console.error('Error making prediction:', error);
+                    }
+                    setNewMessage("")
+                    autoExpand()
                 }
-                const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(chatRoomC)
-                })
-                delay(1000)
-                .then(
-                    result = await response.json(),
-                    console.log(' From Empty ',result.insertedId),
-                    ChatSelect(result.insertedId),
-                    onChatButtonClick(result.insertedId, userId),
-                    setNewMessage(""),
-                    autoExpand(),
-                    LoadChat(userId ,setChatList),
-                )
-            } catch (error) {
-                console.error("Error adding document: ", error);
-            }
-        }else{
-            let send
-            if (ListText === null){
-                setListText([{who: 'user', text: newMessage}])
-                send = [{who: 'user', text: newMessage}]
-            } else {
-                setListText([...ListText, {who: 'user', text: newMessage}])
-                send = [...ListText, {who: 'user', text: newMessage}]
-            }
-            await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(send)
-            })
-            console.log('newMessage is =>',newMessage)
-            const answer = await fetch(`http://localhost:3100/predict?input=${newMessage}`, {
-                method: 'POST'
-            }).then(
-                setNewMessage(""),
-                autoExpand()
-            )
-            // .then(
-            //     setNewMessage(""),
-            //     autoExpand()
-            // )
+        } catch (error) {
+            console.error('Error making prediction:', error);
         }
     }
     useEffect(() => {
@@ -140,7 +153,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId, UserCurr
                                     )
                                 ))}
                                 <div ref={chatContainerRef}></div>
-                                <ModelSkeleton/>
+                                {prediction == null?<ModelSkeleton/>: <></> }
                             </div>
                         )}
                     </div>

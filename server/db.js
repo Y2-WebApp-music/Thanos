@@ -6,25 +6,6 @@ import { readChat, updateChatName, deleteChat, createChat, readMessages, addMess
 const app = express();
 app.use(cors());
 app.use(json())
-// app.use(bodyParser.json());
-
-// let model;
-// async function loadModel() {
-//     model = await tf.loadLayersModel('file://path_to_your_model/model.json');
-// }
-// loadModel();
-
-// ============
-//  Model POST
-// ============
-app.post('/predict', async (req, res) => {
-    const inputs = req.query.input;
-    console.log('inputs of predict is ===> ',inputs)
-    // const predictions = model.predict(inputs);
-    // res.json(predictions.arraySync())
-    // .then(data => res.json(data))
-    // .catch(err => res.json(err))
-});
 
 // ======================
 //  Chat Room GET and POST
