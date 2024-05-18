@@ -31,7 +31,7 @@ function ChatPage() {
         <>
             <div className="Chat-Container">
                 <div>
-                    <Sidebar onChatButtonClick={handleChatButtonClick} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat}/>
+                    <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat}/>
                 </div>
                 <div className="Chat-Container-grid">
                     <Namechat/>

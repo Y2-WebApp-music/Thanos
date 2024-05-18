@@ -45,7 +45,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     const handleKey = (e) =>{
         if (e.code === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            handleSubmit();
+            (loading === true)? null : handleSubmit() ;
         }
     }
 

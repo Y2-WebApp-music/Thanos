@@ -6,7 +6,7 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import { useNavigate } from 'react-router-dom'
 import SidebarSkeleton from "../Loading/LoadSidebar";
 
-function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList }) {
+function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList }) {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
     const [selectedChat, setSelectedChat] = useState(null);
@@ -81,7 +81,7 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
                         :
                             <div className="ChatList">
                                 {chatList.map((item) => (
-                                    <ChatButton key={item._id} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat}/>
+                                    <ChatButton key={item._id} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat} chatId={chatId}/>
                                 ))}
                             </div>
                         }
@@ -92,7 +92,7 @@ function Sidebar( {LoadChat, onChatButtonClick ,chatSelect, chatList, setChatLis
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSelected, setChatList, LoadChat}){
+function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSelected, setChatList, chatId, LoadChat}){
     const [isChatSettingPopup, setChatSettingPopup] = useState(false);
     const [editingName, setEditingName] = useState(false);
     const [newChatName, setNewChatName] = useState(chatname);
@@ -159,7 +159,7 @@ function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSele
             })
             .then(
                 setChatSettingPopup(false),
-                onChatButtonClick(null, null),
+                (chatId === link) ? onChatButtonClick(null, null) : null,
                 await new Promise(resolve => setTimeout(resolve, 1200)),
                 LoadChat(userId, setChatList)
             )
