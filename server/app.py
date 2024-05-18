@@ -19,7 +19,7 @@ def predict():
     input_text = data['input']
     print ('input_text : ',input_text)
 
-    # Preprocess input text
+    # # Preprocess input text
     # sequences = tokenizer.texts_to_sequences([input_text])
     # padded_sequences = pad_sequences(sequences, maxlen=100)  # Adjust maxlen accordingly
 

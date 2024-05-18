@@ -1,7 +1,5 @@
 import React from 'react'
 import './ModelWait.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
 
 export default function ModelSkeleton(){
     return(
@@ -11,9 +9,7 @@ export default function ModelSkeleton(){
                 <p>Thanos Lawyer</p>
             </div>
             <div className='loadingText'>
-                <FontAwesomeIcon icon={faCircle} size="sm" id="faCircle1"/>
-                <FontAwesomeIcon icon={faCircle} size="sm" id="faCircle2"/>
-                <FontAwesomeIcon icon={faCircle} size="sm" id="faCircle3"/>
+                <div className="loadText"></div>
             </div>
         </div>
     )

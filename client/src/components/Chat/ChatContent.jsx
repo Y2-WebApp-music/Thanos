@@ -14,23 +14,14 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     const textareaRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [newMessage, setNewMessage] = useState("")
-    const EmptyChat = ''
 
     useEffect(() => {
-        if (messages != null){
-            setListText(messages.messages)
-        } else {
-            setListText(null)
-        };
+        setListText(messages ? messages.messages : null);
     }, [messages]);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                setUserID(user.uid);
-            } else {
-                setUserID(null);
-            }
+            setUserID(user ? user.uid : null);
         });
         return () => unsubscribe();
     }, [userId]);
@@ -40,41 +31,37 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         textarea.style.height = '1.5em';
         textarea.style.height = Math.min(textarea.scrollHeight, 170) + 'px';
     };
-    const handleChange = () => {
+    const handleChange = (e) => {
+        setNewMessage(e.target.value);
         autoExpand();
+        const button = e.target.parentElement.querySelector('button');
+        if (textareaRef.current && textareaRef.current.value === '') {
+            button.setAttribute('disabled', 'disabled');
+        } else {
+            button.removeAttribute('disabled');
+        }
     };
-    useEffect(() => {
-        autoExpand();
-    }, [newMessage]);
 
     const handleKey = (e) =>{
-        if (textareaRef.current && textareaRef.current.value === '') {
-            e.target.parentElement.querySelector('button').setAttribute('disabled', 'disabled');
-        } else {
-            e.target.parentElement.querySelector('button').removeAttribute('disabled');
-            e.code === "Enter" && handleSubmit()
+        if (e.code === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit();
         }
     }
 
     const handleSubmit = async (e)=>{
-        e.preventDefault();
         if (newMessage === "") return;
         let message = newMessage
         setNewMessage("")
         autoExpand()
-        if (ListText === null){
-            setListText([{who: 'user', text: message}])
-            console.log('>> chatId << is : ',chatId)
-        } else{
-            setListText([...ListText,{who: 'user', text: message}])
-        }
+        setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
         try {
+            setLoading(true);
             const answer = await axios.post('http://127.0.0.1:5510/predict', {
                 input: message
             });
-            setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('wait 1 second DONE')
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            console.log('wait 2 second DONE')
             if (chatId === null ){
                 console.log('Create New Chat')
                 try {
@@ -97,7 +84,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
                         await new Promise(resolve => setTimeout(resolve, 500))
                         result = await response.json()
-                        console.log(' From Empty ',result.insertedId)
                         ChatSelect(result.insertedId)
                         onChatButtonClick(result.insertedId, userId)
                         LoadChat(userId ,setChatList)
@@ -172,12 +158,16 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         <textarea ref={textareaRef}
                             name="promptInput"
                             placeholder="คุยกับ 1MAN&3GUY............." id=""
-                            onChange={(e) => {handleChange(e); setNewMessage(e.target.value);}}
+                            onChange={(e) => {handleChange(e)}}
                             value={newMessage}
                         ></textarea>
-                        <button type="submit">
-                            <FontAwesomeIcon icon={faPaperPlane} size="xl" style={{ color: newMessage ? 'white' : '' }} id="faPaperPlane"/>
-                        </button>
+                        {!loading?(
+                            <button type="submit">
+                                <FontAwesomeIcon icon={faPaperPlane} size="xl" style={{ color: newMessage ? 'white' : '' }} id="faPaperPlane"/>
+                            </button>
+                        ):(
+                            <div className="loadSpin"></div>
+                        )}
                     </form>
                 </div>
                 <p className="warning">1Man&3Guy มีโอกาสผิดพลาดได้. กรุณาเช็คข้อมูลก่อนทุกครั้ง.</p>
