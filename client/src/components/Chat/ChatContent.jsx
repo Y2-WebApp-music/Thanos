@@ -134,7 +134,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                             <>
                             <div className="NewChat-Container">
                                 <div>
-                                    <h1>เริ่มใช้ 1Man&3Guy</h1>
+                                    <h1>เริ่มใช้ Thanos</h1>
                                 </div>
                             </div>
                             </>
