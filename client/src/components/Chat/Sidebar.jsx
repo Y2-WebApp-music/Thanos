@@ -69,7 +69,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
         <>
             <div className="Sidebar-Container">
                 <div className="Sidebar-grid">
-                    <h3 onClick={handleHomepage}>1man&3guy</h3>
+                    <h3 onClick={handleHomepage}>Thanos</h3>
                     <div>
                         <button className="CreateChatBTN" onClick={handleCreateChat}>
                             <FontAwesomeIcon icon={faCirclePlus} size="xl"/>สร้างแชทใหม่

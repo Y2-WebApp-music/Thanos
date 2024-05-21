@@ -170,7 +170,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         )}
                     </form>
                 </div>
-                <p className="warning">1Man&3Guy มีโอกาสผิดพลาดได้. กรุณาเช็คข้อมูลก่อนทุกครั้ง.</p>
+                <p className="warning">Thanos มีโอกาสผิดพลาดได้. กรุณาเช็คข้อมูลก่อนทุกครั้ง.</p>
             </div>
         </>
     )

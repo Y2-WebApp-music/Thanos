@@ -29,7 +29,7 @@ function Register() {
         <>
             <div className="Login-container">
                 <div className="Login-text">
-                    <p>1Man and 3Guy</p>
+                    <p>Thanos</p>
                     <h1>ค้นหาประมวลกฎหมายแพ่งและพาณิชย์</h1>
                 </div>
                 <div className="login-form-bg">
