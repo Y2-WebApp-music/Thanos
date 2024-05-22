@@ -1,9 +1,14 @@
 import numpy as np
-import tensorflow as tf
+
+# import tensorflow as tf
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.preprocessing.text import Tokenizer
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain.vectorstores import FAISS
+
+
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
+# from tensorflow.keras.preprocessing.text import Tokenizer
 
 app = Flask(__name__)
 CORS(app)
@@ -11,28 +16,39 @@ CORS(app)
 # Load the model
 # model = tf.keras.models.load_model('path/to/your/model')
 
-tokenizer = Tokenizer(num_words=10000)
+# tokenizer = Tokenizer(num_words=10000)
 
-@app.route('/predict', methods=['POST'])
+
+@app.route("/predict", methods=["POST"])
 def predict():
     data = request.json
-    input_text = data['input']
-    print ('input_text : ',input_text)
+    question = data["input"]
+    embedding = SentenceTransformerEmbeddings(
+        model_name="intfloat/multilingual-e5-large"
+    )
 
-    # # Preprocess input text
-    # sequences = tokenizer.texts_to_sequences([input_text])
-    # padded_sequences = pad_sequences(sequences, maxlen=100)  # Adjust maxlen accordingly
+    db_path = "./Data/vectorstore_intfloat.db"
 
-    # # Make prediction
-    # predictions = model.predict(padded_sequences)
-    # predicted_text = tokenizer.sequences_to_texts(predictions)
+    vectorstore = FAISS.load_local(
+        db_path, embedding, allow_dangerous_deserialization=True
+    )
 
-    predicted_text = ["เหตุเกิดเมื่อคืนวันทีทกคมีคนปาขวดแก้วเข้ามาในบ้านตอนประมาณตีสองขวดนึงแล้วก็ปาเข้ามาอีกสองขวดแล้วคนในบ้านก็อเห็นมอเตอร์ไซค์คนที่ต้องสงสัยผ่านเราก็โทรไปก็แจ้งตำรวจตำรวจก็มาแล้วไปถามถึงที่บ้านคนที่เราสงสัยเขาให้การปฎิเสธบอกว่าไม่ได้ขับรถไปไหนเลยทั้งที่มีบ้านนี้บ้านเดียวที่นั่งกินเหล้าอยู่ถึงตีสองตอนก่อเหตุุแล้วก็เป็นบ้านนี้บ้านเดียวที่เราเคยมีปากเสียงด้วยแต่ตำรวจเข้าไปจับที่่ท่อไอเสียปรากฎว่ยังร้อนอยู่แล้วพอหลังจากนั้นคนที่เราว่าเป็นคนที่เราสงสัยก็อยู่ในอาการเมาแล้วมาด่าบ้านเราเสียหายๆแถมตอนที่มาด่าเราถึงหน้าบ้านยังอยู่ในชุดนักศึกษามหาวิทยาลัยด้วยยังอยู่ในอาการเมาด้วยเอาผิดให้ถึงกับไล่ออกจากสถาบันได้ไหมคะพอรุ่งเช้าเราก็ไปแจ้งความลงบันทึกประจำวันเอาไว้แต่ๆๆๆตำรวจบอกว่าไม่ได้เห็นจะจะว่าคนที่ต้องสงสัยเป็นคนปาเอาผิดไม่ได้ถ้าเอาผิดต้องมีหมายศาลไปถึงจะคุมตัวได้แล้วแบบนี้เราไม่ต้องทนโดนมันปาขวดใส่บ้านอีกหลายครั้งหรือคะแล้วแบบนี้คนชั่วก็ลอยนวลสิคะอยากทราบว่าจะเอาผิดอะไรได้กับคนพวกนี้คะ" ]
+    # similarity_search_by_vector
+    embedding_vector = embedding.embed_query(question)
+    docs_vs = vectorstore.similarity_search_by_vector(embedding_vector, 20)
+    unique_predictions = set()  # Create an empty set to store unique predictions
+    for i in docs_vs:
+        # print(i.metadata["row"]) ใช้แค่อันนี้เอาไปเก็บใน list แล้วบอกแค่อันที่ไม่ซ้ำ
+        unique_predictions.add(i.metadata["row"])        
+        # print(i.page_content)
 
-    # return jsonify({'prediction': predicted_text[0]})
-    return jsonify({'prediction': predicted_text[0]})
+    predicted_text = list(unique_predictions)  # Convert the set to a list for the response
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5510)
+    return jsonify({"prediction": predicted_text})
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5510)
 
 # run file python app.py
+
+# pip install langchain sentence-transformers faiss langchain-community faiss-cpu
