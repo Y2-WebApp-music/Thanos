@@ -15,7 +15,7 @@
 }
 .input-Container{
     background-color: var(--color-bg3);
-    width: 50%;
+    width: 60%;
     border: solid;
     border-width: 1px;
     border-color: var(--color-darkgray);
@@ -23,7 +23,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 10px;
-    padding: 0.8rem 1rem;
+    padding: 0.6rem 1rem;
     margin-bottom: 0.4rem;
     margin-top: 0.4rem;
     justify-items: center;
@@ -200,7 +200,6 @@ textarea::-webkit-scrollbar {
     color: var(--color-darkgray);
 }
 
-/* HTML: <div class="loader"></div> */
 .loadSpin {
     width: 30px;
     aspect-ratio: 1;

@@ -18,8 +18,8 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     const [csvData, setCsvData] = useState([]);
 
     useEffect(() => {
-        if (csvData != []) {
-            fetch('/src/constant/civil-and-commercial-datasets.csv')
+        if (csvData.length === 0) {
+            fetch(`${'src/constant/civil-and-commercial-datasets.csv'}`)
                 .then(response => response.text())
                 .then(csvText => {
                 Papa.parse(csvText, {
@@ -34,7 +34,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                 });
             });
         }
-        console.log('csvData use')
     }, [userId]);
 
     useEffect(() => {
@@ -49,6 +48,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     }, [userId]);
 
     const autoExpand = () => {
+        console.log('autoExpand USE')
         const textarea = textareaRef.current;
         textarea.style.height = '1.5em';
         textarea.style.height = Math.min(textarea.scrollHeight, 170) + 'px';
@@ -56,12 +56,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     const handleChange = (e) => {
         setNewMessage(e.target.value);
         autoExpand();
-        const button = e.target.parentElement.querySelector('button');
-        if (textareaRef.current && textareaRef.current.value === '') {
-            button.setAttribute('disabled', 'disabled');
-        } else {
-            button.removeAttribute('disabled');
-        }
     };
 
     const handleKey = (e) =>{
@@ -73,7 +67,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
 
     const getTextByArticle = (articleNumber) => {
         if (articleNumber === 0) {
-            return "ไม่ได้อยู่ในกฎหมายแพ่งและพาณิชย์ แต่อาจอยู่ในกฎหมายอื่นๆ";
+            return "มีความเกี่ยวข้องกับกฎหมายอื่นนอกจากประมวลกฎหมายแพ่งและพาณิชย์";
         }
         return csvData[articleNumber.toString()] || 'Text not found';
     };
@@ -82,8 +76,9 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         if (newMessage === "") return;
         let message = newMessage
         setNewMessage("")
-        autoExpand()
+        console.log('textareaRef ',textareaRef )
         await new Promise(resolve => setTimeout(resolve, 200));
+        autoExpand()
         setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
         try {
             setLoading(true);
@@ -118,7 +113,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         LoadChat(userId ,setChatList)
                         setLoading(false);
                         setListText([{who: 'user', text: message}, {who: 'model', text: combinedText}])
-                        autoExpand()
                     }
                 } catch (error) {
                     console.error("Error adding document: ", error);
@@ -142,7 +136,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                             },
                             body: JSON.stringify(send)
                         })
-                        autoExpand()
                     }
                 } catch (error) {
                     console.error('Error making prediction:', error);
@@ -189,7 +182,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                     <form action="" onSubmit={handleSubmit} onKeyDown={handleKey} className="input-Container">
                         <textarea ref={textareaRef}
                             name="promptInput"
-                            placeholder="คุยกับ 1MAN&3GUY............." id=""
+                            placeholder="คุยกับ Thanos............." id=""
                             onChange={(e) => {handleChange(e)}}
                             value={newMessage}
                         ></textarea>
