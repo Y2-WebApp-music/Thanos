@@ -36,4 +36,5 @@ npm install body-parser
 
 ### 📙 python library
 ```
+pip3 install langchain flask flask_cors sentence-transformers langchain-community faiss-cpu
 ```
