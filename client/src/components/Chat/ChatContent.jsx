@@ -54,14 +54,15 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         let message = newMessage
         setNewMessage("")
         autoExpand()
+        await new Promise(resolve => setTimeout(resolve, 200));
         setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
         try {
             setLoading(true);
             const answer = await axios.post('http://127.0.0.1:5510/predict', {
                 input: message
             });
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            console.log('wait 2 second DONE')
+            await new Promise(resolve => setTimeout(resolve, 200));
+            console.log('answer.data.prediction',answer.data.prediction)
             if (chatId === null ){
                 console.log('Create New Chat')
                 try {
@@ -80,13 +81,14 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                             },
                             body: JSON.stringify(chatRoomC)
                         })
-                        await new Promise(resolve => setTimeout(resolve, 500))
+                        await new Promise(resolve => setTimeout(resolve, 200))
                         result = await response.json()
                         ChatSelect(result.insertedId)
                         onChatButtonClick(result.insertedId, userId)
                         LoadChat(userId ,setChatList)
                         setLoading(false);
                         setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
+                        autoExpand()
                     }
                 } catch (error) {
                     console.error("Error adding document: ", error);
@@ -95,7 +97,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                 let send
                 try {
                     if (answer.data.prediction){
-                        console.log('Predict : ',answer.data.prediction)
                         if (ListText === null){
                             setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
                             send = [{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
@@ -111,6 +112,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                             },
                             body: JSON.stringify(send)
                         })
+                        autoExpand()
                     }
                 } catch (error) {
                     console.error('Error making prediction:', error);

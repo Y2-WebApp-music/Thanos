@@ -1,11 +1,8 @@
 import numpy as np
-
-# import tensorflow as tf
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.vectorstores import FAISS
-
 
 # from tensorflow.keras.preprocessing.sequence import pad_sequences
 # from tensorflow.keras.preprocessing.text import Tokenizer
@@ -39,10 +36,11 @@ def predict():
     unique_predictions = set()  # Create an empty set to store unique predictions
     for i in docs_vs:
         # print(i.metadata["row"]) ใช้แค่อันนี้เอาไปเก็บใน list แล้วบอกแค่อันที่ไม่ซ้ำ
-        unique_predictions.add(i.metadata["row"])        
+        unique_predictions.add(i.metadata["row"])
         # print(i.page_content)
 
     predicted_text = list(unique_predictions)  # Convert the set to a list for the response
+    print('predicted_text : ',predicted_text)
 
     return jsonify({"prediction": predicted_text})
 
@@ -52,3 +50,5 @@ if __name__ == "__main__":
 # run file python app.py
 
 # pip install langchain sentence-transformers faiss langchain-community faiss-cpu
+# pip install -U langchain-community
+# /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 app.py
