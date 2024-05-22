@@ -24,6 +24,7 @@ npm i firebase
 npm install axios
 npm i firebase universal-cookie
 npm i @firebase/firestore
+npm install papaparse
 ```
 on server file
 ```

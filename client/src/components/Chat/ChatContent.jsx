@@ -5,6 +5,7 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { auth } from '/src/DB/firebase-config.js'
 import ModelSkeleton from "../Loading/ModelWait";
 import axios from 'axios';
+import Papa from 'papaparse';
 
 
 function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurrent, ChatSelect, messages}) {
@@ -14,6 +15,27 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     const textareaRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [newMessage, setNewMessage] = useState("")
+    const [csvData, setCsvData] = useState([]);
+
+    useEffect(() => {
+        if (csvData != []) {
+            fetch('/src/constant/civil-and-commercial-datasets.csv')
+                .then(response => response.text())
+                .then(csvText => {
+                Papa.parse(csvText, {
+                    header: true,
+                    complete: (results) => {
+                    const data = {};
+                    results.data.forEach(item => {
+                        data[item.article] = item.text;
+                    });
+                    setCsvData(data);
+                    },
+                });
+            });
+        }
+        console.log('csvData use')
+    }, [userId]);
 
     useEffect(() => {
         setListText(messages ? messages.messages : null);
@@ -49,6 +71,13 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         }
     }
 
+    const getTextByArticle = (articleNumber) => {
+        if (articleNumber === 0) {
+            return "ไม่ได้อยู่ในกฎหมายแพ่งและพาณิชย์ แต่อาจอยู่ในกฎหมายอื่นๆ";
+        }
+        return csvData[articleNumber.toString()] || 'Text not found';
+    };
+
     const handleSubmit = async (e)=>{
         if (newMessage === "") return;
         let message = newMessage
@@ -63,16 +92,17 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             });
             await new Promise(resolve => setTimeout(resolve, 200));
             console.log('answer.data.prediction',answer.data.prediction)
+            const combinedText = answer.data.prediction.map(articleNumber => getTextByArticle(articleNumber)).join('\n\n');
             if (chatId === null ){
                 console.log('Create New Chat')
                 try {
-                    if (answer.data.prediction){
+                    if (combinedText){
                         let result
                         let chatRoomC = {
                             name: "newChatRoom",
                             uid: userId,
                             TimeCreated: new Date(),
-                            messages:[{who: 'user', text: message},{who: 'model', text: answer.data.prediction}]
+                            messages:[{who: 'user', text: message},{who: 'model', text: combinedText}]
                         }
                         const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
                             method: 'POST',
@@ -87,7 +117,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         onChatButtonClick(result.insertedId, userId)
                         LoadChat(userId ,setChatList)
                         setLoading(false);
-                        setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
+                        setListText([{who: 'user', text: message}, {who: 'model', text: combinedText}])
                         autoExpand()
                     }
                 } catch (error) {
@@ -98,11 +128,11 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                 try {
                     if (answer.data.prediction){
                         if (ListText === null){
-                            setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
-                            send = [{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
+                            setListText([{who: 'user', text: message}, {who: 'model', text: combinedText}])
+                            send = [{who: 'user', text: message}, {who: 'model', text: combinedText}]
                         } else{
-                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
-                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
+                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: combinedText}])
+                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: combinedText}]
                         }
                         setLoading(false);
                         await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
@@ -200,9 +230,7 @@ function ModelChat({ text }) {
                 <img src="public/images/ModelPicture.jpg" alt="" />
                 <p>1man&3guy</p>
             </div>
-            <div className="ModelChat-text">
-                <p>{text}</p>
-            </div>
+            <div dangerouslySetInnerHTML={{ __html: `${text}`.replace(/\n/g, '<br>') }} className="ModelChat-text"/>
         </div>
         </>
     );
