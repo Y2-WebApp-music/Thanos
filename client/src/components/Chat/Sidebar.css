@@ -137,3 +137,41 @@
     width: 100%;
     padding: 0.3rem 0.5rem;
 }
+
+@media screen and (max-width: 600px) {
+    .Sidebar-Container{
+        position: absolute;
+        width: 60%;
+        height: 93%;
+        display: none;
+        top: 65px;
+        animation: SideIn 1s ;
+        z-index: 5;
+    }
+    .Sidebar-Container.visible {
+        display: block;
+    }
+    .Sidebar-grid h3{
+        display: none;
+    }
+    .Sidebar-grid {
+        width: 100%;
+        grid-template-rows: auto 1fr;
+        margin-top: 1rem;
+    }
+    .Sidebar-Container {
+        align-items: center;
+    }
+    .CreateChatBTN{
+        padding: 0.5rem 2rem;
+        margin-left: 1rem;
+    }
+    .ChatButton-container {
+        width: 85%;
+    }
+
+}
+@keyframes SideIn {
+    from   {transform: translateX(-400px)}
+    to {transform: translateX(0px)}
+}

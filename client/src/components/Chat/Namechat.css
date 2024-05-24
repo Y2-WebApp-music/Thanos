@@ -9,7 +9,12 @@
     justify-items: center;
     align-items: center;
 }
-
+h2{
+    margin: 0 0;
+}
+.mobile-container{
+    display: none;
+}
 .Namechat-container p {
     padding-left: 2rem;
     font-size: 1.4rem;
@@ -79,4 +84,29 @@
     top: 60px;
     right: 10px;
     box-shadow: 0rem 0rem 0.6rem rgba(3, 3, 3, 0.5);
+}
+
+@media screen and (max-width: 600px) {
+    .Namechat-container p {
+        display: none;
+    }
+    .Namechat-container{
+        display: grid;
+        grid-template-columns: auto 1fr;
+    }
+    .userProfile p {
+        display: block;
+    }
+    .userProfile {
+        width:max-content;
+    }
+    .mobile-container{
+        display: flex;
+        gap: 5px;
+        padding-left: 1rem;
+    }
+    .mobile-container button {
+        background-color: var(--color-bg2);
+        padding: 0.2rem 0.7rem;
+    }
 }

@@ -161,10 +161,8 @@ textarea::-webkit-scrollbar {
     }
 }
 .ModelChat-text p{
-    /* background-color: brown; */
     width: 100%;
     overflow: hidden;
-    /* animation: typing 3.5s steps(30, end) */
 }
 
 .chat-container-Empty{
@@ -241,11 +239,28 @@ textarea::-webkit-scrollbar {
     background-size: 50px 50px;
     background-repeat: no-repeat;
     animation: l7 1s infinite;
-  }
-  @keyframes l7 {
+}
+@keyframes l7 {
     0%   {background-position:0    0   ,0 100%,100% 100% }
     25%  {background-position:100% 0   ,0 100%,100% 100% }
     50%  {background-position:100% 0   ,0 0   ,100% 100% }
     75%  {background-position:100% 0   ,0 0   ,0    100% }
     100% {background-position:100% 100%,0 0   ,0    100% }
-  }
+}
+
+@media screen and (max-width: 600px) {
+    .input-Container{
+        width: 80%;
+        padding: 0.3rem 1rem;
+    }
+    .UserChat-Container-Profile{
+        margin-bottom: 0.2rem;
+        height: 35px;
+        transform: translateX(10px) translateY(0px);
+    }
+    .ModelChat-Container-Profile{
+        margin-bottom: 0.2rem;
+        height: 35px;
+        transform: translateX(-10px) translateY(0px);
+    }
+}

@@ -13,6 +13,7 @@ function ChatPage() {
     const [chatList, setChatList] = useState([])
     const [loadRoom, setLoadRoom] = useState(false)
     const [loadMes, setLoadMes] = useState(false)
+    const [sidebar, setSidebar] = useState(false)
 
     const handleChatButtonClick = (chatId, userId) => {
         setChatId(chatId);
@@ -32,11 +33,9 @@ function ChatPage() {
     return(
         <>
             <div className="Chat-Container">
-                <div>
-                    <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat} setLoadRoom={setLoadRoom} loadRoom={loadRoom}/>
-                </div>
+                <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat} setLoadRoom={setLoadRoom} loadRoom={loadRoom} sidebar={sidebar}/>
                 <div className="Chat-Container-grid">
-                    <Namechat/>
+                    <Namechat setSidebar={setSidebar} sidebar={sidebar}/>
                     <ChatContent loadMes={loadMes} LoadChat={LoadChat} onChatButtonClick={handleChatButtonClick} setChatList={setChatList} chatId={chatId} UserCurrent={userId} ChatSelect={handleSelectChat} messages={messages} setMessages={setMessages} setLoadRoom={setLoadRoom}/>
                 </div>
             </div>

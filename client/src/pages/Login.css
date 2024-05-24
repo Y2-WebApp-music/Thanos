@@ -117,3 +117,17 @@
     border-color: var(--color-blue);
     outline: none;
 }
+
+@media screen and (max-width: 600px) {
+    .Login-text{
+        display: none;
+    }
+    .Login-container{
+        width: 100%;
+        height: 100vh;
+        display: block;
+    }
+    .login-form {
+        width: 70%;
+    }
+}

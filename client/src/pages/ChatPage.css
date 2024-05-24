@@ -17,3 +17,10 @@
 .Chat-Container p {
     margin: 0 0;
 }
+
+@media screen and (max-width: 600px) {
+    .Chat-Container{
+        grid-template-columns: 1fr;
+        overflow: hidden;
+    }
+}

@@ -6,7 +6,7 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import { useNavigate } from 'react-router-dom'
 import SidebarSkeleton from "../Loading/LoadSidebar";
 
-function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList, setLoadRoom, loadRoom}) {
+function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList, setLoadRoom, loadRoom, sidebar}) {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
     const [selectedChat, setSelectedChat] = useState(null);
@@ -67,7 +67,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
 
     return(
         <>
-            <div className="Sidebar-Container">
+            <div className={`Sidebar-Container ${sidebar ? 'visible' : ''}`}>
                 <div className="Sidebar-grid">
                     <h3 onClick={handleHomepage}>Thanos</h3>
                     <div>

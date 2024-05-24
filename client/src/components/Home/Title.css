@@ -32,7 +32,6 @@
 }
 
 .Title-text{
-    align-self: left;
     width: 100%;
     align-self:flex-end;
 }
@@ -109,4 +108,34 @@
     background-color: var(--color-purple);
     transition: .2s;
     animation: flow 4s infinite;
+}
+
+@media screen and (max-width: 600px) {
+    .Title-text{
+        align-self: center;
+        justify-self: center;
+        text-align: center;
+    }
+    .Title-text div{
+        width: 100%;
+    }
+    .Title-text div h1{
+        margin-left: 0;
+        font-size: 5rem;
+    }
+    .Title-text p{
+        margin-left: 0;
+        font-size: 1rem;
+    }
+    .formStartButton{
+        align-self: center;
+        text-align: center;
+    }
+    .StartButton {
+        font-size: 1.6rem;
+        padding: 0.3rem 3.5rem;
+        border-radius: 30px;
+        margin-right: 0rem;
+        margin-top: 0rem;
+    }
 }

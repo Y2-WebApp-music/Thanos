@@ -3,13 +3,14 @@ import './Namechat.css'
 import { auth } from '/src/DB/firebase-config.js'
 import { signOut } from "firebase/auth";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faRightFromBracket, faBars } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom'
 
-function Namechat() {
-
+function Namechat({setSidebar, sidebar}) {
     const [username, setUsername] = useState(null);
     const [userPhoto, setUserPhoto] = useState(null);
     const [isPopUpOpen, setPopUpOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -41,10 +42,18 @@ function Namechat() {
         return () => unsubscribe();
     }, []);
 
+    const sidebarDisplay = () => {
+        setSidebar(!sidebar);
+    };
+
     return(
         <>
             <div className="Namechat-container">
                 <p>แชทสำหรับค้นหาประมวลกฎหมายแพ่งและพาณิชย์</p>
+                <div className="mobile-container">
+                    <button onClick={sidebarDisplay}><FontAwesomeIcon icon={faBars} size="xl"/></button>
+                    <h2 onClick={()=>navigate("/")}>Thanos</h2>
+                </div>
                 <div className="Namechat-right-container">
                     <div className="userProfile" onClick={togglePopUp}>
                         <p>{username}</p>
