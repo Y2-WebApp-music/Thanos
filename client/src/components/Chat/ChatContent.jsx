@@ -8,7 +8,7 @@ import axios from 'axios';
 import Papa from 'papaparse';
 
 
-function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurrent, ChatSelect, messages, setLoadRoom}) {
+function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurrent, ChatSelect, messages, setLoadRoom, loadMes}) {
     const [ListText, setListText] = useState(null)
     const [userId, setUserID] = useState(UserCurrent)
     const [loading, setLoading] = useState(false);
@@ -74,8 +74,12 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
         try {
             setLoading(true);
-            const answer = await axios.post('http://127.0.0.1:5510/predict', {
-                input: message
+            const answer = await axios.post('https://thanospython-k3y2okp23a-as.a.run.app/predict', {
+            input: message
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             });
             await new Promise(resolve => setTimeout(resolve, 200));
             console.log('answer.data.prediction',answer.data.prediction)
@@ -145,7 +149,12 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             <div className="ChatContent-container">
                 <div className="chat-container-scroll" >
                     <div className="chat-container-Empty" >
-                        { ListText === null?(
+                        {loadMes === true? (
+                            <div className="loadMes-Container">
+                                    <div className="loadMes"></div>
+                            </div>
+                        ): ( ListText === null?
+                            (
                             <>
                             <div className="NewChat-Container">
                                 <div>
@@ -165,6 +174,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                                     {loading && <ModelSkeleton />}
                                     <div ref={chatContainerRef}></div>
                                 </div>
+                        )
                         )}
                     </div>
                 </div>

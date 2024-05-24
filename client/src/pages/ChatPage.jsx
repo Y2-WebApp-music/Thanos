@@ -12,6 +12,7 @@ function ChatPage() {
     const [messages, setMessages] = useState(null);
     const [chatList, setChatList] = useState([])
     const [loadRoom, setLoadRoom] = useState(false)
+    const [loadMes, setLoadMes] = useState(false)
 
     const handleChatButtonClick = (chatId, userId) => {
         setChatId(chatId);
@@ -19,7 +20,7 @@ function ChatPage() {
         if (chatId === null && userId === null){
             setMessages(null)
         } else {
-            LoadMessages(chatId, userId, setMessages)
+            LoadMessages(chatId, userId, setMessages, setLoadMes)
         }
         console.log('ChatPage Get chatId:',chatId)
         console.log('ChatPage Get userId:',userId)
@@ -36,7 +37,7 @@ function ChatPage() {
                 </div>
                 <div className="Chat-Container-grid">
                     <Namechat/>
-                    <ChatContent LoadChat={LoadChat} onChatButtonClick={handleChatButtonClick} setChatList={setChatList} chatId={chatId} UserCurrent={userId} ChatSelect={handleSelectChat} messages={messages} setMessages={setMessages} setLoadRoom={setLoadRoom}/>
+                    <ChatContent loadMes={loadMes} LoadChat={LoadChat} onChatButtonClick={handleChatButtonClick} setChatList={setChatList} chatId={chatId} UserCurrent={userId} ChatSelect={handleSelectChat} messages={messages} setMessages={setMessages} setLoadRoom={setLoadRoom}/>
                 </div>
             </div>
         </>
@@ -71,9 +72,10 @@ function LoadChat( userId, setChatList, setLoadRoom){
     };
     fetchChats();
 }
-function LoadMessages( chatId, userId, setMessages){
+function LoadMessages( chatId, userId, setMessages, setLoadMes){
     let retryCount = 0;
     const maxRetries = 3;
+    setLoadMes(true)
     const fetchMessages = async () => {
         try {
             const response = await fetch(`http://localhost:3100/messages?id=${chatId}&&uid=${userId}`);
@@ -88,6 +90,7 @@ function LoadMessages( chatId, userId, setMessages){
                     console.log("Max retries exceeded. Unable to fetch chat.");
                 }
             } else {
+                setLoadMes(false)
                 setMessages(Messages);
             }
         } catch (error) {
