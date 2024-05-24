@@ -34,6 +34,9 @@ def predict():
     predicted_text = list(unique_predictions)
     print('predicted_text : ',predicted_text)
 
+    if predicted_text[0] == 0:
+        return jsonify({"prediction" : [0]})
+    
     return jsonify({"prediction": predicted_text})
 
 if __name__ == "__main__":
