@@ -187,7 +187,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                             value={newMessage}
                         ></textarea>
                         {!loading?(
-                            <button type="submit">
+                            <button type="submit" disabled={!newMessage || loading}>
                                 <FontAwesomeIcon icon={faPaperPlane} size="xl" style={{ color: newMessage ? 'white' : '' }} id="faPaperPlane"/>
                             </button>
                         ):(
