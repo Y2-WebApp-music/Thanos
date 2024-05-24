@@ -76,7 +76,6 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
                         </button>
                     </div>
                     <div className="ChatList-scroll">
-                        {/* <SidebarSkeleton/> */}
                         {chatList.length === 0 ? <SidebarSkeleton/>
                         :
                             <div className="ChatList">

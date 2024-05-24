@@ -76,7 +76,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             setLoading(true);
             const answer = await axios.post('http://127.0.0.1:5510/predict', {
                 input: message
-            });
+            });x
             await new Promise(resolve => setTimeout(resolve, 200));
             console.log('answer.data.prediction',answer.data.prediction)
             if (chatId === null ){

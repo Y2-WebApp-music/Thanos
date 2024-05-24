@@ -4,17 +4,12 @@ from flask_cors import CORS
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.vectorstores import FAISS
 
-# from tensorflow.keras.preprocessing.sequence import pad_sequences
-# from tensorflow.keras.preprocessing.text import Tokenizer
-
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Load the model
-# model = tf.keras.models.load_model('path/to/your/model')
-
-# tokenizer = Tokenizer(num_words=10000)
-
+@app.get("/")
+def home():
+    return "Hello from python server Flask"
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -30,25 +25,16 @@ def predict():
         db_path, embedding, allow_dangerous_deserialization=True
     )
 
-    # similarity_search_by_vector
     embedding_vector = embedding.embed_query(question)
     docs_vs = vectorstore.similarity_search_by_vector(embedding_vector, 20)
-    unique_predictions = set()  # Create an empty set to store unique predictions
+    unique_predictions = set()
     for i in docs_vs:
-        # print(i.metadata["row"]) ใช้แค่อันนี้เอาไปเก็บใน list แล้วบอกแค่อันที่ไม่ซ้ำ
         unique_predictions.add(i.metadata["row"])
-        # print(i.page_content)
 
-    predicted_text = list(unique_predictions)  # Convert the set to a list for the response
+    predicted_text = list(unique_predictions)
     print('predicted_text : ',predicted_text)
 
     return jsonify({"prediction": predicted_text})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5510)
-
-# run file python app.py
-
-# pip install langchain sentence-transformers faiss langchain-community faiss-cpu
-# pip install -U langchain-community
-# /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 app.py
