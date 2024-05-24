@@ -6,7 +6,7 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import { useNavigate } from 'react-router-dom'
 import SidebarSkeleton from "../Loading/LoadSidebar";
 
-function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList }) {
+function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList, setLoadRoom, loadRoom}) {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
     const [selectedChat, setSelectedChat] = useState(null);
@@ -27,7 +27,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
     }, [userId]);
     useEffect(() => {
         if (userId != null){
-            LoadChat( userId ,setChatList )
+            LoadChat( userId ,setChatList, setLoadRoom )
         }
     }, [userId]);
 
@@ -53,7 +53,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
                 console.log('result ',result),
                 setSelectedChat(result.insertedId),
                 onChatButtonClick(result.insertedId, userId),
-                LoadChat(userId ,setChatList)
+                LoadChat(userId ,setChatList, setLoadRoom)
             )
         } catch (error) {
             console.error("Error adding document: ", error);
@@ -76,13 +76,18 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
                         </button>
                     </div>
                     <div className="ChatList-scroll">
-                        {chatList.length === 0 ? <SidebarSkeleton/>
-                        :
-                            <div className="ChatList">
-                                {chatList.map((item) => (
-                                    <ChatButton key={item._id} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat} chatId={chatId}/>
-                                ))}
-                            </div>
+                        {loadRoom === true ? (
+                            <SidebarSkeleton/>
+                        ) : (
+                            chatList.length === 0?(
+                                <></>
+                            ):(
+                                <div className="ChatList">
+                                    {chatList.map((item) => (
+                                        <ChatButton key={item._id} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat} chatId={chatId}/>
+                                    ))}
+                                </div>
+                            ))
                         }
                     </div>
                 </div>
@@ -141,7 +146,7 @@ function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSele
                 })
                 .then(
                     await new Promise(resolve => setTimeout(resolve, 1000)),
-                    LoadChat(userId ,setChatList)
+                    LoadChat(userId ,setChatList, setLoadRoom)
                 )
             } catch (error) {
                 console.error("Error adding document: ", error);
@@ -160,7 +165,7 @@ function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSele
                 setChatSettingPopup(false),
                 (chatId === link) ? onChatButtonClick(null, null) : null,
                 await new Promise(resolve => setTimeout(resolve, 1200)),
-                LoadChat(userId, setChatList)
+                LoadChat(userId, setChatList, setLoadRoom)
             )
         } catch (error) {
             console.error("Error send post:", error);

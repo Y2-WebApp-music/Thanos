@@ -11,6 +11,7 @@ function ChatPage() {
     const [chatSelect, setChatSelect] = useState(null);
     const [messages, setMessages] = useState(null);
     const [chatList, setChatList] = useState([])
+    const [loadRoom, setLoadRoom] = useState(false)
 
     const handleChatButtonClick = (chatId, userId) => {
         setChatId(chatId);
@@ -31,20 +32,21 @@ function ChatPage() {
         <>
             <div className="Chat-Container">
                 <div>
-                    <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat}/>
+                    <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat} setLoadRoom={setLoadRoom} loadRoom={loadRoom}/>
                 </div>
                 <div className="Chat-Container-grid">
                     <Namechat/>
-                    <ChatContent LoadChat={LoadChat} onChatButtonClick={handleChatButtonClick} setChatList={setChatList} chatId={chatId} UserCurrent={userId} ChatSelect={handleSelectChat} messages={messages} setMessages={setMessages} />
+                    <ChatContent LoadChat={LoadChat} onChatButtonClick={handleChatButtonClick} setChatList={setChatList} chatId={chatId} UserCurrent={userId} ChatSelect={handleSelectChat} messages={messages} setMessages={setMessages} setLoadRoom={setLoadRoom}/>
                 </div>
             </div>
         </>
     )
 }
 
-function LoadChat( userId, setChatList  ){
+function LoadChat( userId, setChatList, setLoadRoom){
     let retryCount = 0;
     const maxRetries = 3;
+    setLoadRoom(true)
     const fetchChats = async () => {
         try {
             const response = await fetch(`http://localhost:3100/chatroom?uid=${userId}`);
@@ -59,6 +61,7 @@ function LoadChat( userId, setChatList  ){
                     console.log("Max retries exceeded. Unable to fetch chat.");
                 }
             } else {
+                setLoadRoom(false)
                 setChatList(Chats);
             }
         } catch (error) {

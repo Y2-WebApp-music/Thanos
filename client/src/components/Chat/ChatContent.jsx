@@ -8,7 +8,7 @@ import axios from 'axios';
 import Papa from 'papaparse';
 
 
-function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurrent, ChatSelect, messages}) {
+function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurrent, ChatSelect, messages, setLoadRoom}) {
     const [ListText, setListText] = useState(null)
     const [userId, setUserID] = useState(UserCurrent)
     const [loading, setLoading] = useState(false);
@@ -76,11 +76,10 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             setLoading(true);
             const answer = await axios.post('http://127.0.0.1:5510/predict', {
                 input: message
-            });x
+            });
             await new Promise(resolve => setTimeout(resolve, 200));
             console.log('answer.data.prediction',answer.data.prediction)
             if (chatId === null ){
-                console.log('Create New Chat')
                 try {
                     if (answer.data.prediction){
                         let result
@@ -101,7 +100,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         result = await response.json()
                         ChatSelect(result.insertedId)
                         onChatButtonClick(result.insertedId, userId)
-                        LoadChat(userId ,setChatList)
+                        LoadChat(userId ,setChatList, setLoadRoom)
                         setLoading(false);
                         setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
                     }
