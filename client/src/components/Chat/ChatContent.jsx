@@ -65,18 +65,10 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         }
     }
 
-    const getTextByArticle = (articleNumber) => {
-        if (articleNumber === 0) {
-            return "มีความเกี่ยวข้องกับกฎหมายอื่นนอกจากประมวลกฎหมายแพ่งและพาณิชย์";
-        }
-        return csvData[articleNumber.toString()] || 'Text not found';
-    };
-
     const handleSubmit = async (e)=>{
         if (newMessage === "") return;
         let message = newMessage
         setNewMessage("")
-        console.log('textareaRef ',textareaRef )
         await new Promise(resolve => setTimeout(resolve, 200));
         autoExpand()
         setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
@@ -87,17 +79,16 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             });
             await new Promise(resolve => setTimeout(resolve, 200));
             console.log('answer.data.prediction',answer.data.prediction)
-            const combinedText = answer.data.prediction.map(articleNumber => getTextByArticle(articleNumber)).join('\n\n');
             if (chatId === null ){
                 console.log('Create New Chat')
                 try {
-                    if (combinedText){
+                    if (answer.data.prediction){
                         let result
                         let chatRoomC = {
                             name: "newChatRoom",
                             uid: userId,
                             TimeCreated: new Date(),
-                            messages:[{who: 'user', text: message},{who: 'model', text: combinedText}]
+                            messages:[{who: 'user', text: message},{who: 'model', text: answer.data.prediction}]
                         }
                         const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
                             method: 'POST',
@@ -112,7 +103,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         onChatButtonClick(result.insertedId, userId)
                         LoadChat(userId ,setChatList)
                         setLoading(false);
-                        setListText([{who: 'user', text: message}, {who: 'model', text: combinedText}])
+                        setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
                     }
                 } catch (error) {
                     console.error("Error adding document: ", error);
@@ -122,11 +113,11 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                 try {
                     if (answer.data.prediction){
                         if (ListText === null){
-                            setListText([{who: 'user', text: message}, {who: 'model', text: combinedText}])
-                            send = [{who: 'user', text: message}, {who: 'model', text: combinedText}]
+                            setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
+                            send = [{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
                         } else{
-                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: combinedText}])
-                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: combinedText}]
+                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
+                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
                         }
                         setLoading(false);
                         await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
@@ -167,7 +158,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                                 <div className="chat-container" id="scroller" ref={chatContainerRef}>
                                     {ListText.map((message,index) => (
                                         message.who === "model" ? (
-                                            <ModelChat key={index} text={message.text} />
+                                            <ModelChat key={index} text={message.text} csvData={csvData}/>
                                         ) : (
                                             <UserChat key={index} text={message.text} user={auth.currentUser.displayName} photoURL={auth.currentUser.photoURL} />
                                         )
@@ -215,15 +206,24 @@ function UserChat({ text,user, photoURL }) {
     );
 }
 
-function ModelChat({ text }) {
+function ModelChat({ text, csvData }) {
+    const getTextByArticle = (articleNumber) => {
+        if (articleNumber === 0) {
+            return "มีความเกี่ยวข้องกับกฎหมายอื่นนอกจากประมวลกฎหมายแพ่งและพาณิชย์";
+        }
+        return csvData[articleNumber.toString()] || 'Text not found';
+    };
+    const combinedText = text.map(articleNumber => getTextByArticle(articleNumber)).join('\n\n');
+    console.log(csvData)
+
     return (
         <>
         <div className="ModelChat-Container">
             <div className="ModelChat-Container-Profile">
                 <img src="public/images/ModelPicture.jpg" alt="" />
-                <p>1man&3guy</p>
+                <p>Thanos</p>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: `${text}`.replace(/\n/g, '<br>') }} className="ModelChat-text"/>
+            <div dangerouslySetInnerHTML={{ __html: `${combinedText}`.replace(/\n/g, '<br>') }} className="ModelChat-text"/>
         </div>
         </>
     );
