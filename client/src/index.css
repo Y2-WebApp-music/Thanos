@@ -48,7 +48,6 @@ h1 {
 }
 
 button {
-  font-family: "Noto Sans Thai","Noto Sans Thai Looped", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial;
   border-radius: 8px;
   border: none;
   outline: none;
@@ -56,9 +55,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
+  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
   color: #ffffff;
+}
+button:hover {
+  border-color: #646cff;
 }
 
 button:focus,
