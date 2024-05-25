@@ -66,6 +66,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     }
 
     const handleSubmit = async (e)=>{
+        e.preventDefault();
         if (newMessage === "") return;
         let message = newMessage
         setNewMessage("")
