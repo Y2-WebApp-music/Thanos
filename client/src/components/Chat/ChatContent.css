@@ -264,3 +264,19 @@ textarea::-webkit-scrollbar {
         transform: translateX(-10px) translateY(0px);
     }
 }
+@media screen and (max-width: 950px) {
+    .input-Container{
+        width: 80%;
+        padding: 0.3rem 1rem;
+    }
+    .UserChat-Container-Profile{
+        margin-bottom: 0.2rem;
+        height: 35px;
+        transform: translateX(10px) translateY(0px);
+    }
+    .ModelChat-Container-Profile{
+        margin-bottom: 0.2rem;
+        height: 35px;
+        transform: translateX(-10px) translateY(0px);
+    }
+}

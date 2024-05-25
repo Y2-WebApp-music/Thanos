@@ -33,6 +33,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
     }, [userId]);
 
     const handleCreateChat = async () => {
+        setLoadRoom(true)
         let result
         try {
             let chatRoom = {
@@ -54,7 +55,8 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
                 console.log('result ',result),
                 setSelectedChat(result.insertedId),
                 onChatButtonClick(result.insertedId, userId),
-                LoadChat(userId ,setChatList, setLoadRoom)
+                LoadChat(userId ,setChatList, setLoadRoom),
+                setLoadRoom(false)
             )
         } catch (error) {
             console.error("Error adding document: ", error);
@@ -145,8 +147,10 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
         setChatSettingPopup(false);
         setEditingName(true);
     }
-    const handleKey = e=>{
-        e.code === "Enter" && handleSaveName()
+    const handleKey = (event) => {
+        if (event.code === 'Enter' || event.key === 'Enter') {
+            handleSaveName();
+        }
     }
     const handleSaveName = async () => {
         setEditingName(false);

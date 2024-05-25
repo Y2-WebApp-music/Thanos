@@ -59,14 +59,16 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     };
 
     const handleKey = (e) =>{
-        if (e.code === "Enter" && !e.shiftKey) {
+        if ((e.code === "Enter" || e.key === "Enter") && !e.shiftKey) {
             e.preventDefault();
             (loading === true)? null : handleSubmit() ;
         }
     }
 
     const handleSubmit = async (e)=>{
-        e.preventDefault();
+        if (e) {
+            e.preventDefault()
+        }
         if (newMessage === "") return;
         let message = newMessage
         setNewMessage("")

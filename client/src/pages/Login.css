@@ -131,3 +131,11 @@
         width: 70%;
     }
 }
+@media screen and (max-width: 1200px) {
+    .Login-text h1{
+        font-size: 5rem;
+    }
+    .login-form {
+        width: 70%;
+    }
+}

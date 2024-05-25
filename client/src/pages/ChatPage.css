@@ -20,7 +20,12 @@
 
 @media screen and (max-width: 600px) {
     .Chat-Container{
-        grid-template-columns: 1fr;
+        display: block;
         overflow: hidden;
+    }
+}
+@media screen and (max-width: 950px) {
+    .Chat-Container{
+        grid-template-columns: 30% 70%;
     }
 }
