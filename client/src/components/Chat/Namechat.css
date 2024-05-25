@@ -8,6 +8,7 @@
     grid-template-columns: 1fr 1fr;
     justify-items: center;
     align-items: center;
+    z-index: 6;
 }
 h2{
     margin: 0 0;
