@@ -263,6 +263,9 @@ textarea::-webkit-scrollbar {
         height: 35px;
         transform: translateX(-10px) translateY(0px);
     }
+    .NewChat-Container div h1{
+        font-size: 2rem;
+    }
 }
 @media screen and (max-width: 950px) {
     .input-Container{
