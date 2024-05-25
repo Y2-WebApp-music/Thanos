@@ -144,7 +144,7 @@
         width: 60%;
         height: 93%;
         display: none;
-        top: 65px;
+        top: 7%;
         animation: SideIn 1s ;
         z-index: 5;
     }
@@ -169,7 +169,6 @@
     .ChatButton-container {
         width: 85%;
     }
-
 }
 @keyframes SideIn {
     from   {transform: translateX(-400px)}

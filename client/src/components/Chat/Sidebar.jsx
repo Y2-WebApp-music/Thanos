@@ -6,10 +6,11 @@ import { auth, db } from '/src/DB/firebase-config.js'
 import { useNavigate } from 'react-router-dom'
 import SidebarSkeleton from "../Loading/LoadSidebar";
 
-function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList, setLoadRoom, loadRoom, sidebar}) {
+function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, setChatList, setLoadRoom, loadRoom, setSidebar, sidebar}) {
     const navigate = useNavigate();
     const handleHomepage = () => {navigate("/");};
     const [selectedChat, setSelectedChat] = useState(null);
+    const sidebarRef = useRef(null);
     useEffect(() => {
         setSelectedChat(chatSelect);
     }, [chatSelect]);
@@ -64,10 +65,21 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
         setSelectedChat(chatId);
         onChatButtonClick(chatId, userId);
     };
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+                setSidebar(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [setSidebar]);
 
     return(
         <>
-            <div className={`Sidebar-Container ${sidebar ? 'visible' : ''}`}>
+            <div ref={sidebarRef} className={`Sidebar-Container ${sidebar ? 'visible' : ''}`}>
                 <div className="Sidebar-grid">
                     <h3 onClick={handleHomepage}>Thanos</h3>
                     <div>
@@ -84,7 +96,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
                             ):(
                                 <div className="ChatList">
                                     {chatList.map((item) => (
-                                        <ChatButton key={item._id} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat} chatId={chatId}/>
+                                        <ChatButton key={item._id} setSidebar={setSidebar} chatname={item.name} link={item._id} userId={item.uid} chatList={chatList} onChatButtonClick={handleChatButtonClick} isSelected={selectedChat === item._id} setChatList={setChatList} LoadChat={LoadChat} chatId={chatId} setLoadRoom={setLoadRoom}/>
                                     ))}
                                 </div>
                             ))
@@ -96,7 +108,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
     )
 }
 
-function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSelected, setChatList, chatId, LoadChat}){
+function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chatList, isSelected, setChatList, chatId, LoadChat, setLoadRoom}){
     const [isChatSettingPopup, setChatSettingPopup] = useState(false);
     const [editingName, setEditingName] = useState(false);
     const [newChatName, setNewChatName] = useState(chatname);
@@ -118,6 +130,7 @@ function ChatButton({chatname, onChatButtonClick, link, userId, chatList, isSele
         setChatSettingPopup(!isChatSettingPopup);
     }
     const handleClick = () => {
+        setSidebar(false)
         onChatButtonClick(link, userId);
     }
     useEffect(() => {

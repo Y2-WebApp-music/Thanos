@@ -33,7 +33,7 @@ function ChatPage() {
     return(
         <>
             <div className="Chat-Container">
-                <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat} setLoadRoom={setLoadRoom} loadRoom={loadRoom} sidebar={sidebar}/>
+                <Sidebar onChatButtonClick={handleChatButtonClick} chatId={chatId} chatList={chatList} setChatList={setChatList} chatSelect={chatSelect} LoadChat={LoadChat} setLoadRoom={setLoadRoom} loadRoom={loadRoom} sidebar={sidebar} setSidebar={setSidebar}/>
                 <div className="Chat-Container-grid">
                     <Namechat setSidebar={setSidebar} sidebar={sidebar}/>
                     <ChatContent loadMes={loadMes} LoadChat={LoadChat} onChatButtonClick={handleChatButtonClick} setChatList={setChatList} chatId={chatId} UserCurrent={userId} ChatSelect={handleSelectChat} messages={messages} setMessages={setMessages} setLoadRoom={setLoadRoom}/>
