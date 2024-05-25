@@ -85,16 +85,16 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                 }
             });
             await new Promise(resolve => setTimeout(resolve, 200));
-            console.log('answer.data.prediction',answer.data.prediction)
+            console.log('answer.data.prediction',answer.data)
             if (chatId === null ){
                 try {
-                    if (answer.data.prediction){
+                    if (answer.data){
                         let result
                         let chatRoomC = {
                             name: "newChatRoom",
                             uid: userId,
                             TimeCreated: new Date(),
-                            messages:[{who: 'user', text: message},{who: 'model', text: answer.data.prediction}]
+                            messages:[{who: 'user', text: message},{who: 'model', text: answer.data}]
                         }
                         const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
                             method: 'POST',
@@ -109,7 +109,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         onChatButtonClick(result.insertedId, userId)
                         LoadChat(userId ,setChatList, setLoadRoom)
                         setLoading(false);
-                        setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
+                        setListText([{who: 'user', text: message}, {who: 'model', text: answer.data}])
                     }
                 } catch (error) {
                     console.error("Error adding document: ", error);
@@ -117,13 +117,13 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             } else {
                 let send
                 try {
-                    if (answer.data.prediction){
+                    if (answer.data){
                         if (ListText === null){
-                            setListText([{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
-                            send = [{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
+                            setListText([{who: 'user', text: message}, {who: 'model', text: answer.data}])
+                            send = [{who: 'user', text: message}, {who: 'model', text: answer.data}]
                         } else{
-                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}])
-                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data.prediction}]
+                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data}])
+                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data}]
                         }
                         setLoading(false);
                         await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
@@ -219,14 +219,14 @@ function UserChat({ text,user, photoURL }) {
 }
 
 function ModelChat({ text, csvData }) {
-    const getTextByArticle = (articleNumber) => {
-        if (articleNumber === 0) {
-            return "มีความเกี่ยวข้องกับกฎหมายอื่นนอกจากประมวลกฎหมายแพ่งและพาณิชย์";
-        }
-        return csvData[articleNumber.toString()] || 'Text not found';
-    };
-    const combinedText = text.map(articleNumber => getTextByArticle(articleNumber)).join('\n\n');
-    console.log(csvData)
+    // const getTextByArticle = (articleNumber) => {
+    //     if (articleNumber === 0) {
+    //         return "มีความเกี่ยวข้องกับกฎหมายอื่นนอกจากประมวลกฎหมายแพ่งและพาณิชย์";
+    //     }
+    //     return csvData[articleNumber.toString()] || 'Text not found';
+    // };
+    // const combinedText = text.map(articleNumber => getTextByArticle(articleNumber)).join('\n\n');
+    // console.log(csvData)
 
     return (
         <>
@@ -235,7 +235,7 @@ function ModelChat({ text, csvData }) {
                 <img src="public/images/ModelPicture.jpg" alt="" />
                 <p>Thanos</p>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: `${combinedText}`.replace(/\n/g, '<br>') }} className="ModelChat-text"/>
+            <div dangerouslySetInnerHTML={{ __html: `${text}`.replace(/\n/g, '<br>') }} className="ModelChat-text"/>
         </div>
         </>
     );
