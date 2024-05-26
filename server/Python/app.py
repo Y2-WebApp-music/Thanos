@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from collections import Counter
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.vectorstores import FAISS
@@ -13,12 +13,14 @@ from langchain_core.runnables import RunnablePassthrough
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.get("/")
 def home():
     return "Hello from python server Flask"
 
 @app.route("/predict", methods=["POST"])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def predict():
     data = request.json
     question = data["input"]
