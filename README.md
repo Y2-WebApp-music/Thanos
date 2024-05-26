@@ -33,9 +33,11 @@ npm install mongodb
 npm install nodemon
 npm install cors
 npm install body-parser
+npm install http-proxy-middleware
 ```
 
 ### 📙 python library
+python version 3.10.14
 ```
-pip3 install langchain flask flask_cors sentence-transformers langchain-community faiss-cpu
+pip3 install langchain flask flask_cors sentence-transformers langchain-community faiss-cpu pandas numpy gunicorn
 ```

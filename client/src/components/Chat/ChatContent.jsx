@@ -15,26 +15,6 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
     const textareaRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [newMessage, setNewMessage] = useState("")
-    const [csvData, setCsvData] = useState([]);
-
-    useEffect(() => {
-        if (csvData.length === 0) {
-            fetch(`${'src/constant/civil-and-commercial-datasets.csv'}`)
-                .then(response => response.text())
-                .then(csvText => {
-                Papa.parse(csvText, {
-                    header: true,
-                    complete: (results) => {
-                    const data = {};
-                    results.data.forEach(item => {
-                        data[item.article] = item.text;
-                    });
-                    setCsvData(data);
-                    },
-                });
-            });
-        }
-    }, [userId]);
 
     useEffect(() => {
         setListText(messages ? messages.messages : null);
@@ -77,26 +57,27 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
         try {
             setLoading(true);
-            const answer = await axios.post('https://thanospython-k3y2okp23a-as.a.run.app/predict', {
-            input: message
-            }, {
+            const answer = await fetch('https://thanos-mongo.vercel.app/api/predict', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                body: JSON.stringify({ input: message })
             });
+            const data = await answer.json();
             await new Promise(resolve => setTimeout(resolve, 200));
-            console.log('answer.data.prediction',answer.data)
+            console.log('answer.data.prediction',data.prediction)
             if (chatId === null ){
                 try {
-                    if (answer.data){
+                    if (data.prediction){
                         let result
                         let chatRoomC = {
                             name: "newChatRoom",
                             uid: userId,
                             TimeCreated: new Date(),
-                            messages:[{who: 'user', text: message},{who: 'model', text: answer.data}]
+                            messages:[{who: 'user', text: message},{who: 'model', text: data.prediction}]
                         }
-                        const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
+                        const response = await fetch(`https://thanos-mongo.vercel.app/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -109,7 +90,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         onChatButtonClick(result.insertedId, userId)
                         LoadChat(userId ,setChatList, setLoadRoom)
                         setLoading(false);
-                        setListText([{who: 'user', text: message}, {who: 'model', text: answer.data}])
+                        setListText([{who: 'user', text: message}, {who: 'model', text: data.prediction}])
                     }
                 } catch (error) {
                     console.error("Error adding document: ", error);
@@ -117,16 +98,17 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
             } else {
                 let send
                 try {
-                    if (answer.data){
+                    if (data.prediction){
                         if (ListText === null){
-                            setListText([{who: 'user', text: message}, {who: 'model', text: answer.data}])
-                            send = [{who: 'user', text: message}, {who: 'model', text: answer.data}]
+                            setListText([{who: 'user', text: message}, {who: 'model', text: data.prediction}])
+                            send = [{who: 'user', text: message}, {who: 'model', text: data.prediction}]
                         } else{
-                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data}])
-                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: answer.data}]
+                            setListText([...ListText,{who: 'user', text: message}, {who: 'model', text: data.prediction}])
+                            send = [...ListText,{who: 'user', text: message}, {who: 'model', text: data.prediction}]
                         }
+                        console.log('send to mongo',send)
                         setLoading(false);
-                        await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
+                        await fetch(`https://thanos-mongo.vercel.app/addMessage?id=${messages._id}&document=${send}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -169,7 +151,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                                 <div className="chat-container" id="scroller" ref={chatContainerRef}>
                                     {ListText.map((message,index) => (
                                         message.who === "model" ? (
-                                            <ModelChat key={index} text={message.text} csvData={csvData}/>
+                                            <ModelChat key={index} text={message.text}/>
                                         ) : (
                                             <UserChat key={index} text={message.text} user={auth.currentUser.displayName} photoURL={auth.currentUser.photoURL} />
                                         )
@@ -218,15 +200,7 @@ function UserChat({ text,user, photoURL }) {
     );
 }
 
-function ModelChat({ text, csvData }) {
-    // const getTextByArticle = (articleNumber) => {
-    //     if (articleNumber === 0) {
-    //         return "มีความเกี่ยวข้องกับกฎหมายอื่นนอกจากประมวลกฎหมายแพ่งและพาณิชย์";
-    //     }
-    //     return csvData[articleNumber.toString()] || 'Text not found';
-    // };
-    // const combinedText = text.map(articleNumber => getTextByArticle(articleNumber)).join('\n\n');
-    // console.log(csvData)
+function ModelChat({ text }) {
 
     return (
         <>

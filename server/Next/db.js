@@ -1,15 +1,24 @@
 import express, { json } from 'express'
 import cors from 'cors'
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { readChat, updateChatName, deleteChat, createChat, readMessages, addMessage } from './mongo.js';
-// const tf = require('@tensorflow/tfjs-node'); // Or use 'torch' for PyTorch models
 
 const app = express();
 app.use(cors());
 app.use(json())
-
+app.use('/api', createProxyMiddleware({
+    target: 'https://thanospython-k3y2okp23a-as.a.run.app',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api': '',
+    },
+}));
 // ======================
 //  Chat Room GET and POST
 // ======================
+app.get('/', (req, res)=>{
+    res.send('Hello from mongoDB Server')
+})
 app.post('/addChatRoom', (req, res)=>{
     const uid = req.query.uid;
     const document = req.body;

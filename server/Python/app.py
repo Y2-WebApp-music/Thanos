@@ -106,6 +106,7 @@ def predict():
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 20})
 
     llm = Ollama(
+        base_url="http://34.124.244.6:11434",
         model="llama3",
         temperature=0,
         )
