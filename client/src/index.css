@@ -19,7 +19,7 @@
   --color-lightgray : #9C9C9C;
   --color-purple : #9758EA;
   --color-orange : #FB9F16;
-  --color-green : #5EE58A;
+  --color-green : #36c264;
   --color-red : #E63C47;
   --color-text : #ffffff;
   --color-blue : #309AE5;
@@ -62,6 +62,9 @@ button {
 }
 button:hover {
   border-color: #646cff;
+}
+button:hover{
+  scale: 1.05;
 }
 
 button:focus,

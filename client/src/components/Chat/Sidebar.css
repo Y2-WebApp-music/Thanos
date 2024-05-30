@@ -170,6 +170,33 @@
         width: 85%;
     }
 }
+
+.delete-con{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.delCon-button{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.delCon-button button{
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+}
+.delCon-button button:hover{
+    scale: 1.05;
+}
+.yes{
+    background-color: var(--color-green);
+}
+.no{
+    background-color: var(--color-red);
+}
 @keyframes SideIn {
     from   {transform: translateX(-400px)}
     to {transform: translateX(0px)}

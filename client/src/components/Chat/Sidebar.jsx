@@ -113,6 +113,7 @@ function Sidebar( {chatId, LoadChat, onChatButtonClick ,chatSelect, chatList, se
 function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chatList, isSelected, setChatList, chatId, LoadChat, setLoadRoom}){
     const [isChatSettingPopup, setChatSettingPopup] = useState(false);
     const [editingName, setEditingName] = useState(false);
+    const [delCon, setDelCon] = useState(false)
     const [newChatName, setNewChatName] = useState(chatname);
     const inputRef = useRef(null);
 
@@ -182,7 +183,8 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
                 setChatSettingPopup(false),
                 (chatId === link) ? onChatButtonClick(null, null) : null,
                 await new Promise(resolve => setTimeout(resolve, 1200)),
-                LoadChat(userId, setChatList, setLoadRoom)
+                LoadChat(userId, setChatList, setLoadRoom),
+                setDelCon(false)
             )
         } catch (error) {
             console.error("Error send post:", error);
@@ -195,17 +197,26 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
             <div className={`ChatButton-container ${isSelected ? 'selected' : ''}`} >
                 {editingName ? (
                     <input type="text" value={newChatName} onChange={handleNameChange} onKeyDown={handleKey} ref={inputRef}/>
-                ) : (
+                ) : ( delCon ?(
+                    <div className="delete-con">
+                            <p>คุณต้องการลบแชทนี้หรือไม่</p>
+                            <div className="delCon-button">
+                                <button onClick={handleDeleteChat} className="yes">ใช่</button>
+                                <button onClick={()=>setDelCon(false)} className="no">ไม่</button>
+                            </div>
+                        </div>
+                ):(
                     <>
                         <p onClick={(e) => {handleClick();}}>{newChatName}</p>
                         <div className="Chat-Setting" onClick={toggleChatSetting}><FontAwesomeIcon icon={faEllipsis} size="lg" id="faEllipsis"/></div>
                         {isChatSettingPopup &&
                             <div className="Sidebar-popup">
                                 <button onClick={handleEditName}><FontAwesomeIcon icon={faPenToSquare} size="sm" /> เปลี่ยนชื่อ</button>
-                                <button onClick={handleDeleteChat}><FontAwesomeIcon icon={faTrash} size="sm" /> ลบแชทนี้</button>
+                                <button onClick={()=>setDelCon(true)}><FontAwesomeIcon icon={faTrash} size="sm" /> ลบแชทนี้</button>
                             </div>
                         }
                     </>
+                )
                 )}
             </div>
         </>
