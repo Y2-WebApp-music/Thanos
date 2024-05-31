@@ -128,6 +128,11 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
             document.removeEventListener('mousedown', handleOutsideSetting);
         };
     }, [isChatSettingPopup]);
+    useEffect(() => {
+        if (editingName) {
+            inputRef.current.select();
+        }
+    }, [editingName]);
 
     const toggleChatSetting = () => {
         setChatSettingPopup(!isChatSettingPopup);
@@ -136,11 +141,6 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
         setSidebar(false)
         onChatButtonClick(link, userId);
     }
-    useEffect(() => {
-        if (editingName) {
-            inputRef.current.select();
-        }
-    }, [editingName]);
     const handleNameChange = (event) => {
         setNewChatName(event.target.value);
     }
@@ -151,8 +151,14 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
     const handleKey = (event) => {
         if (event.code === 'Enter' || event.key === 'Enter') {
             handleSaveName();
+        }else if (event.key === 'Escape') {
+            handleCancelEdit();
         }
     }
+    const handleCancelEdit = () => {
+        setEditingName(false);
+        setNewChatName(chatname);
+    };
     const handleSaveName = async () => {
         setEditingName(false);
         if(newChatName === "" || newChatName === chatname){
