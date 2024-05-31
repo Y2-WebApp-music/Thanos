@@ -117,6 +117,10 @@
     border-color: var(--color-blue);
     outline: none;
 }
+p.error-message{
+    color: var(--color-red);
+    font-size: 1rem;
+}
 
 @media screen and (max-width: 600px) {
     .Login-text{
