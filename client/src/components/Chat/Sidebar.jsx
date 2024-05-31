@@ -129,6 +129,17 @@ function ChatButton({setSidebar, chatname, onChatButtonClick, link, userId, chat
         };
     }, [isChatSettingPopup]);
     useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (editingName && inputRef.current && !inputRef.current.contains(event.target)) {
+                handleCancelEdit();
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [editingName]);
+    useEffect(() => {
         if (editingName) {
             inputRef.current.select();
         }
