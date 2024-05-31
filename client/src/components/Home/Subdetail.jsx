@@ -4,7 +4,7 @@ import './Subdetail.css'
 function Subdetail() {
     return(
         <>
-            <div><p>Hello</p></div>
+            <div className="Subdetail"><p>Hello</p></div>
         </>
     )
 }

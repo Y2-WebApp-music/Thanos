@@ -1,13 +1,14 @@
 import React from 'react'
 import Title from '../components/Home/Title'
-import Subdetail from '../components/Home/Subdetail'
+import './Home.css'
 
 function Home() {
     return (
-        <>
-            <Title/>
-            <Subdetail/>
-        </>
+        <div className='Home'>
+            <div className='section'>
+                <Title/>
+            </div>
+        </div>
     )
 }
 

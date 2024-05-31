@@ -29,6 +29,8 @@
     align-items: center;
     grid-template-rows: 50% 50%;
     gap: 1rem;
+    background: rgb(131,58,180);
+    background: linear-gradient(360deg, #6363633c 0%, rgba(253,29,29,0) 6%, rgba(253,29,29,0) 100%);
 }
 
 .Title-text{
