@@ -57,7 +57,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
         setListText(prevList => prevList ? [...prevList, {who: 'user', text: message}] : [{who: 'user', text: message}]);
         try {
             setLoading(true);
-            const answer = await fetch('https://thanos-mongo.vercel.app/api/predict', {
+            const answer = await fetch('http://127.0.0.1:5510/predict', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                             TimeCreated: new Date(),
                             messages:[{who: 'user', text: message},{who: 'model', text: data.prediction}]
                         }
-                        const response = await fetch(`https://thanos-mongo.vercel.app/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
+                        const response = await fetch(`http://localhost:3100/addChatRoom?uid=${userId}&document=${chatRoomC}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -108,7 +108,7 @@ function ChatContent({LoadChat, onChatButtonClick, setChatList, chatId ,UserCurr
                         }
                         console.log('send to mongo',send)
                         setLoading(false);
-                        await fetch(`https://thanos-mongo.vercel.app/addMessage?id=${messages._id}&document=${send}`, {
+                        await fetch(`http://localhost:3100/addMessage?id=${messages._id}&document=${send}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
